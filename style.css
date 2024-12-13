@@ -1,0 +1,26 @@
+body {
+  background-color: rgba(0, 0, 0);
+  display: grid;
+  justify-items: center;
+}
+
+header {
+  display: grid;
+  justify-items: center;
+  color: rgba(60, 171, 60, 0.998);
+  font-family: "Arcade Interlaced", "ArcadeClassic", sans-serif;
+  /* font-family: "Arcade Normal", sans-serif; */
+  /* font-family: "Arcade Rounded", sans-serif; */
+}
+
+header h1, h2, h3 {
+  margin-bottom: 0;
+}
+
+#gameField {
+  width: 600px;
+  height:500px;
+  border: red 5px double;
+  box-shadow: 0px 0px 10px 5px #323232;
+  background-color: rgb(40, 40, 40);
+}

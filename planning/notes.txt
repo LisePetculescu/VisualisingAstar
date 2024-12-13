@@ -1,0 +1,30 @@
+Girl Catch beloved but very stressed Hamster Game
+
+enemy 1 & 2 --> cats
+enemy 3 --> human
+ball --> hamster
+
+// TODO: 
+1. Normal grid setup
+1a. gamefield and walls
+1b. add enemy1
+1c. add enemy2
+1d. enemy 1&2 collission with edges / walls
+1e. add ball 
+1f. add ball moving with keys: arrows/wasd
+1g. add home
+1h. ball collission with edges / walls / home
+2. add enemy 3 --> hardcoded AI trying to get the ball
+2a. add enemy 3 trying to catch the ball from the buttom going straight up & down
+2b. add enemy 3 collission with edges/walls and ball 
+3. add A* algorithm to 3rd enemy
+3a. make algorithm --> ball is the (moving) goal
+3c. visualise how the algorithm tries to find the ball
+
+
+Perhaps
+4. add snacks
+4a. add ball collission with snacks 
+4b. add points to ball for hitting snacks
+5. add graphics to the game
+6. add highscore locally

@@ -55,13 +55,13 @@ header {
   border: red 2px solid;
 }
 
-/* #enemy3 {
-  width: 32px;
+#enemy3 {
+  width: 40px;
   aspect-ratio: 16/20;
   background-image: url("./sprites/Character\ 7.png");
   background-size: 400% 400%;
   image-rendering: pixelated;
   position: absolute;
    border: red 2px solid;
-} */
+}
 

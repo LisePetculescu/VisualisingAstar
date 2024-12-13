@@ -2,25 +2,65 @@ body {
   background-color: rgba(0, 0, 0);
   display: grid;
   justify-items: center;
+  text-align: center;
 }
 
 header {
   display: grid;
   justify-items: center;
   color: rgba(60, 171, 60, 0.998);
-  font-family: "Arcade Interlaced", "ArcadeClassic", sans-serif;
+  font-family: "ArcadeClassic", sans-serif;
+  font-family: "Arcade Interlaced", sans-serif;
   /* font-family: "Arcade Normal", sans-serif; */
   /* font-family: "Arcade Rounded", sans-serif; */
 }
 
-header h1, h2, h3 {
-  margin-bottom: 0;
-}
-
-#gameField {
+#gamefield {
   width: 600px;
-  height:500px;
+  height: 500px;
   border: red 5px double;
   box-shadow: 0px 0px 10px 5px #323232;
   background-color: rgb(40, 40, 40);
 }
+
+#player {
+  width: 35px;
+  aspect-ratio: 16/20;
+  background-image: url("./sprites/mouse.png");
+  background-position: 50% 75%;
+  background-size: 400% 400%;
+  image-rendering: pixelated;
+  position: absolute;
+    border: red 2px solid;
+}
+#enemy1 {
+  width: 60px; /* Adjust the width as needed */
+  aspect-ratio: 10 / 10; /* Maintain the sprite's aspect ratio */
+  background-image: url("./sprites/cat.png");
+  background-position: 7% 30%; /* Align with the top-right cat */
+  background-size: 1650% 800%; /* Scale to match the number of sprites */
+  image-rendering: pixelated; /* Ensure sharp pixels for retro look */
+  position: absolute;
+  border: red 2px solid;
+}
+#enemy2 {
+  width: 60px; /* Adjust the width as needed */
+  aspect-ratio: 10 / 10; /* Maintain the sprite's aspect ratio */
+  background-image: url("./sprites/cat.png");
+  background-position: 40% 30%; /* Align with the top-right cat */
+  background-size: 1650% 800%; /* Scale to match the number of sprites */
+  image-rendering: pixelated; /* Ensure sharp pixels for retro look */
+  position: absolute;
+  border: red 2px solid;
+}
+
+#enemy3 {
+  width: 32px;
+  aspect-ratio: 16/20;
+  background-image: url("./sprites/Character\ 7.png");
+  background-size: 400% 400%;
+  image-rendering: pixelated;
+  position: absolute;
+   border: red 2px solid;
+}
+

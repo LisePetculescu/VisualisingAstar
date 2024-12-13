@@ -28,3 +28,10 @@ Perhaps
 4b. add points to ball for hitting snacks
 5. add graphics to the game
 6. add highscore locally
+
+Credits:
+"[LPC] Cats and Dogs" Artist: bluecarrot16 License: CC-BY 3.0 / GPL 3.0 / GPL 2.0 / OGA-BY 3.0 
+Please link to opengameart: http://opengameart.org/content/lpc-cats-and-dogs
+
+mouse and rat: 
+Created by Tuomo Untinen (Reemax) & Jordan Irwin (AntumDeluge) https://opengameart.org/content/rodents-rat-rework 

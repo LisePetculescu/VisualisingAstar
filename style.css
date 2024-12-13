@@ -34,23 +34,22 @@ header {
     border: red 2px solid;
 }
 #enemy1 {
-  width: 50px; /* Adjust the width as needed */
-  aspect-ratio: 10 / 10; /* Maintain the sprite's aspect ratio */
+  width: 50px; 
+  aspect-ratio: 10 / 10; 
   background-image: url("./sprites/cat.png");
   background-position: 7.7% 30%; /* Align with the top-right cat */
-  background-size: 2500% 1100%;  /* Scale to match the number of sprites */
-  image-rendering: pixelated; /* Ensure sharp pixels for retro look */
+  background-size: 2500% 1100%;  /* Scale to match the sprites */
+  image-rendering: pixelated; 
   position: absolute;
   border: red 2px solid;
 }
 #enemy2 {
-  width: 50px; /* Adjust the width as needed */
-  aspect-ratio: 10 / 10; /* Maintain the sprite's aspect ratio */
+  width: 50px; 
+  aspect-ratio: 10 / 10; 
   background-image: url("./sprites/cat.png");
   background-size: 2500% 1100%; 
-  background-position: 33.8% 30%; /* Align with the top-right cat */
-  /* background-size: 1650% 800%; Scale to match the number of sprites */
-  image-rendering: pixelated; /* Ensure sharp pixels for retro look */
+  background-position: 33.8% 30%; 
+  image-rendering: pixelated;
   position: absolute;
   border: red 2px solid;
 }

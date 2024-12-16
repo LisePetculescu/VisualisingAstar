@@ -9,6 +9,7 @@ ball --> hamster
 1a. gamefield and walls
 1b. add enemy1
 1c. add enemy2
+1ca. add movement to enemy 1 & 2
 1d. enemy 1&2 collission with edges / walls
 1e. add ball 
 1f. add ball moving with keys: arrows/wasd

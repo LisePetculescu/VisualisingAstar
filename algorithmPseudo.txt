@@ -3,10 +3,11 @@ https://www.geeksforgeeks.org/a-search-algorithm/
 
 A* pseudo code
 
-use Diagonal distance to calcultate heuristics for cells in A* when we can move i 8 directions
-Manhattan is used when we can only move in 4 directions up-down, left-right
-Euclidean is for when we can move in any direction
+* Manhattan is used when we can only move in 4 directions up-down, left-right
+* use Diagonal distance to calcultate heuristics for cells in A* when we can move i 8 directions
+* Euclidean is for when we can move in any direction
 
 all 3 measures the distance from current cell to goal cell. 
 
-i will use diagonal distance. 
+i will use diagonal distance. https://en.wikipedia.org/wiki/Chebyshev_distance 
+

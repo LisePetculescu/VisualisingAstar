@@ -3,8 +3,8 @@ window.addEventListener("load", start);
 function start() {
   console.log("🥳 js is running!");
   displayPlayer();
-  displayCatLeft();
-  displayCatRight();
+  // displayCatLeft();
+  // displayCatRight();
   displayAlgorithmEnemy();
 }
 
@@ -18,8 +18,8 @@ const gameField = {
 // rodent
 let player = {
   x: gameField.width / 2 - 32,
-  y: 100,
-  width: 32,
+  y: 80,
+  width: 30,
   height: 20,
   speed: 50,
   moving: false
@@ -47,10 +47,10 @@ let enemy2 = {
 
 // girl / algorithm
 let enemy3 = {
-  x: gameField.width / 2,
+  x: gameField.width / 2 - 20,
   y: gameField.height - 60,
-  width: 30,
-  height: 40,
+  width: 40,
+  height: 50,
   speed: 60,
   moving: true
 };

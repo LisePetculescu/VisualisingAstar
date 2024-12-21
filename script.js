@@ -1,11 +1,19 @@
 window.addEventListener("load", start);
+import testMinHeap from "./test_minHeap.js";
 
 function start() {
   console.log("🥳 js is running!");
+  tests();
+
   displayPlayer();
   // displayCatLeft();
   // displayCatRight();
   displayAlgorithmEnemy();
+}
+
+function tests() {
+
+  testMinHeap();
 }
 
 // ***************** Model *****************

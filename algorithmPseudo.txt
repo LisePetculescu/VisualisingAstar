@@ -1,13 +1,77 @@
 source: https://en.wikipedia.org/wiki/A*_search_algorithm 
-https://www.geeksforgeeks.org/a-search-algorithm/
+BAD! https://www.geeksforgeeks.org/a-search-algorithm/
 
 A* pseudo code
 
+OpenSet = {startNode}
+a 'set' of nodes to explore, made as a priority queue with the the lowest cost first.
+at first only the startnode is in the the OpenSet. 
+then it checks it's neighbors fScore, and stores them so the lowest value neighbor is explored first. 
+
+    source: https://en.wikipedia.org/wiki/Heap_(data_structure) 
+    MinHeap
+    a binary tree
+    a minHeap used for a priority queue: 
+    * has a O(log n) to extract the node with the smallest cost, as it is the root.
+    * insert: at the end, first available space. if the new elements value is smaller than its parent we heapify-up. 
+    * extraction: remove root, and insert last element as root. if new root is bigger than children heapify-down. 
+    * replace: remove root and insert new element as root, then heapify-down if needed. 
+               this avoids having to heapify-up the new element as in insert.  
+    * minHeap array - relations:
+      For a node at index i in the array:
+        * left child is at index 2i + 1.
+        * right child is at index 2i + 2.
+        * parent is located at index ⌊(i - 1) / 2⌋.
+            ex. Node at index 0 (Root):
+            Left child: 2 * 0 + 1 = 1 
+            Right child: 2 * 0 + 2 = 2 
+            Parent: (0 - 1) / 2 = -1 / 2 = -1 (root has no parent) ((can not be -0,5 index in array))
+
+cameFrom = new Map() - empty map
+cameFrom[n] --> storing the predessesors to the node, that currently has the cheapest path from start to n
+used for reconstructing the shortest/cheapest path from start to finish,
+by storing the currently cheapest path, by remembering the predessesors of the the visited nodes,
+that costs the least. 
+
+or 
+
+closedSet:
+ .set()
+
+a set has a O(1) to check if an element is already in the list
+only adding the id of a node would be the most efficient,
+as it is faster for the set to compare a primitive (number), rather than the entire node object. 
+
+We do not need to use closedSet, if we remove a node from the openSet when it is processed, and use cameFrom to remember path. 
+
+Heuristics: 
 * Manhattan is used when we can only move in 4 directions up-down, left-right
 * use Diagonal distance to calcultate heuristics for cells in A* when we can move i 8 directions
-* Euclidean is for when we can move in any direction
+* Euclidean is for when we can move in any direction, more than 8 directions
 
 all 3 measures the distance from current cell to goal cell. 
 
 i will use diagonal distance. https://en.wikipedia.org/wiki/Chebyshev_distance 
+
+function chebyshevDistance(node, goal) {
+  return Math.max(Math.abs(goal.x - node.x), Math.abs(goal.y - node.y));
+}
+
+Math.abs() always returns a positive number ex.
+let x1 = 7, x2 = 3; 
+let difference = Math.abs(x2 - x1); // Returns: 4
+3 - 7 = -4 --> abs removes '-' --> 4
+we're not interested in a minus in the distance between the cells in a grid
+there cannot be -4 distance between cells in the grid
+
+Math.max() returns the highest number (or rounds up)
+let dx = Math.abs(x2 - x1);
+let dy = Math.abs(y2 - y1);
+let chebyshevDistance = Math.max(dx, dy);
+we need the biggest distance between x1-x2 & y1-y2, 
+to determine the cost of moving from one cell to another. 
+
+
+
+
 

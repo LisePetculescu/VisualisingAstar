@@ -1,5 +1,5 @@
 export default class Node {
-  constructor(id, y, x, gScore = Infinity, hScore = 0, parent = null, neighbors = [], isObstacle = false) {
+  constructor(id, y, x, gScore = Infinity, hScore = 0, parent = null, isObstacle = false) {
     this.id = id;
 
     //coordinates in grid
@@ -16,14 +16,14 @@ export default class Node {
     // to get the path from finish to start
     this.parent = parent;
 
-    this.neighbors = neighbors;
-
     this.isObstacle = isObstacle;
   }
 
   // comparing fScores to use in MinHeap
   compareNodes(otherNode) {
-    return this.fScore - otherNode.fScore;
+    if (this.fScore < otherNode.fScore) return -1;
+    if (this.fScore > otherNode.fScore) return 1;
+    return 0;
   }
 
   // update gScore and fScore when cheaper path is found
@@ -37,7 +37,4 @@ export default class Node {
   isSameNode(otherNode) {
     return this.id === otherNode.id;
   }
-
-  // return 8 surrounding neighbors node
-  getNeighbors() {}
 }

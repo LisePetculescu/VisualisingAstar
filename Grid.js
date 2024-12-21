@@ -50,12 +50,36 @@ export default class Grid {
 
   // !! CELLE er hele objekett med row og col + value !!
 
-  // - `neighbours( row, col )` - returnerer en liste over alle naboceller til denne (i form af `{row, col}` objekter
+  // - `neighbours( row, col )` - returnerer en liste over alle 8 naboceller til denne, hvis de eksisterer
   neighbours(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
     let neighbours = [];
-    neighbours.push(this.north({ row, col }), this.south({ row, col }), this.east({ row, col }), this.west({ row, col }), this.northEast({ row, col }), this.northWest({ row, col }), this.southEast({ row, col }), this.southWest({ row, col }));
-    return neighbours.filter((neighbor) => neighbor !== undefined);
+
+    const northNeighbor = this.north({ row, col });
+    if (northNeighbor) neighbours.push(northNeighbor);
+
+    const southNeighbor = this.south(row, col);
+    if (southNeighbor) neighbours.push(southNeighbor);
+
+    const eastNeighbor = this.east(row, col);
+    if (eastNeighbor) neighbours.push(eastNeighbor);
+
+    const westNeighbor = this.west(row, col);
+    if (westNeighbor) neighbours.push(westNeighbor);
+
+    const northEastNeighbor = this.northEast(row, col);
+    if (northEastNeighbor) neighbours.push(northEastNeighbor);
+
+    const northWestNeighbor = this.northWest(row, col);
+    if (northWestNeighbor) neighbours.push(northWestNeighbor);
+
+    const southEastNeighbor = this.southEast(row, col);
+    if (southEastNeighbor) neighbours.push(southEastNeighbor);
+
+    const southWestNeighbor = this.southWest(row, col);
+    if (southWestNeighbor) neighbours.push(southWestNeighbor);
+
+    return neighbours;
   }
 
   // - `neighbourValues( row, col )` - returnerer en liste over alle nabocellers values.
@@ -67,8 +91,6 @@ export default class Grid {
     });
     return values;
   }
-
-  // Når der skal returneres en celle, kan du give et objekt med `{row, col, value}`
 
   // - `nextInRow( row, col )` - returnerer cellen til højre efter denne, eller undefined hvis der ikke er flere i den **row**
   nextInRow(rowOrObj, colParam) {
@@ -88,7 +110,7 @@ export default class Grid {
     if (row - 1 < 0 || col >= this.cols()) {
       return undefined;
     } else {
-      return { row: row - 1, col, value: this.grid[row - 1][col] };
+      return this.grid[row - 1][col];
     }
   }
 
@@ -98,7 +120,7 @@ export default class Grid {
     if (row + 1 >= this.rows() || col >= this.cols()) {
       return undefined;
     } else {
-      return { row: row + 1, col, value: this.grid[row + 1][col] };
+      return this.grid[row + 1][col];
     }
   }
 
@@ -108,7 +130,7 @@ export default class Grid {
     if (row >= this.rows() || col - 1 < 0) {
       return undefined;
     } else {
-      return { row, col: col - 1, value: this.grid[row][col - 1] };
+      return this.grid[row][col - 1];
     }
   }
 
@@ -118,7 +140,7 @@ export default class Grid {
     if (row >= this.rows() || col + 1 >= this.cols()) {
       return undefined;
     } else {
-      return { row, col: col + 1, value: this.grid[row][col + 1] };
+      return this.grid[row][col + 1];
     }
   }
 
@@ -127,7 +149,7 @@ export default class Grid {
     if (row - 1 < 0 || col + 1 >= this.cols()) {
       return undefined;
     } else {
-      return { row: row - 1, col: col + 1, value: this.grid[row - 1][col + 1] };
+      return this.grid[row - 1][col + 1];
     }
   }
 
@@ -136,7 +158,7 @@ export default class Grid {
     if (row - 1 < 0 || col - 1 < 0) {
       return undefined;
     } else {
-      return { row: row - 1, col: col - 1, value: this.grid[row - 1][col - 1] };
+      return this.grid[row - 1][col - 1];
     }
   }
 
@@ -145,7 +167,7 @@ export default class Grid {
     if (row + 1 >= this.rows() || col + 1 >= this.cols()) {
       return undefined;
     } else {
-      return { row: row + 1, col: col + 1, value: this.grid[row + 1][col + 1] };
+      return this.grid[row + 1][col + 1];
     }
   }
 
@@ -154,7 +176,7 @@ export default class Grid {
     if (row + 1 >= this.rows() || col - 1 < 0) {
       return undefined;
     } else {
-      return { row: row + 1, col: col - 1, value: this.grid[row + 1][col - 1] };
+      return this.grid[row + 1][col - 1];
     }
   }
 

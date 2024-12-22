@@ -7,6 +7,9 @@ export default class MinHeap {
 
   // see root node value / the smallest value in the heap
   peek() {
+    if (this.size() <= 0) {
+      return null;
+    } 
     return this.heap[0];
   }
 

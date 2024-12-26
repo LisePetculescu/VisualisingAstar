@@ -16,6 +16,7 @@ export default class Node {
     // to get the path from finish to start
     this.parent = parent;
 
+    // to rule out nodes that are obstacles from being visited
     this.isObstacle = isObstacle;
   }
 

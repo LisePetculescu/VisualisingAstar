@@ -3,6 +3,46 @@ BAD! https://www.geeksforgeeks.org/a-search-algorithm/
 
 A* pseudo code
 
+function reconstructPathFromStartToGoal(predesessorsList, current) {
+    // create list to add nodes from path starting at goal moving towards start
+    let pathList = [current];
+
+
+    // predesessorsList is a map of nodes that are the predessesor of the current nodes
+    while (current in predesessorsList) {
+      // set current to old current's predessesor
+      current = predesessorsList[current]
+
+      // add new current to pathList
+      pathList.add(current)
+    }
+    /* when all predessesors has been added to pathList, 
+     ending at the startNode, path is reconstructed */
+    return pathList
+
+}
+
+// see explenation further down
+function chebyshevDistance(node, goal) {
+  return Math.max(Math.abs(goal.x - node.x), Math.abs(goal.y - node.y));
+}
+
+// h is the heuristic which is the returned result from chebyshevDistance(node, goal)
+function AStar(start, goal, h) {
+  // init the openSet as a priority queue using a min-heap 
+  let openSet = new Minheap()
+
+  // add start node to the openSet, the only known node right now
+  openSet.insert(start)
+
+
+
+
+}
+
+
+
+
 OpenSet = {startNode}
 a 'set' of nodes to explore, made as a priority queue with the the lowest cost first.
 at first only the startnode is in the the OpenSet. 
@@ -27,8 +67,8 @@ then it checks it's neighbors fScore, and stores them so the lowest value neighb
             Right child: 2 * 0 + 2 = 2 
             Parent: (0 - 1) / 2 = -1 / 2 = -1 (root has no parent) ((can not be -0,5 index in array))
 
-cameFrom = new Map() - empty map
-cameFrom[n] --> storing the predessesors to the node, that currently has the cheapest path from start to n
+predesessorsList = new Map() - empty map
+predesessorsList[n] --> storing the predessesors to the node, that currently has the cheapest path from start to n
 used for reconstructing the shortest/cheapest path from start to finish,
 by storing the currently cheapest path, by remembering the predessesors of the the visited nodes,
 that costs the least. 

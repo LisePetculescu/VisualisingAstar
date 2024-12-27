@@ -3,13 +3,15 @@
 export default class MinHeap {
   constructor(heap = []) {
     this.heap = heap;
+    // to check which nodes are in the heap
+    this.nodeSet = new Set();
   }
 
   // see root node value / the smallest value in the heap
   peek() {
     if (this.size() <= 0) {
       return null;
-    } 
+    }
     return this.heap[0];
   }
 
@@ -17,6 +19,7 @@ export default class MinHeap {
   insert(node) {
     // insert node at the end of heap
     this.heap.push(node);
+    this.nodeSet.add(node);
 
     // restore balance in heap from the index of the new node
     this.heapifyUp(this.size() - 1);
@@ -35,6 +38,9 @@ export default class MinHeap {
     // remove last node / old root
     // save root node to return
     const oldRootToReturn = this.heap.pop();
+
+    // remove node from nodeSet
+    this.nodeSet.delete(oldRootToReturn);
 
     // restore balance from root with heapifyDown
     this.heapifyDown(0);
@@ -115,6 +121,7 @@ export default class MinHeap {
 
     // remove last node
     const nodeToRemove = this.heap.pop();
+    this.nodeSet.delete(nodeToRemove);
 
     // restore balance in heap
     this.heapifyDown(index);
@@ -174,5 +181,11 @@ export default class MinHeap {
   // empties the heap
   clear() {
     this.heap = [];
+    this.nodeSet.clear();
+  }
+
+  // returns the node if it exits in the set / heap
+  contains(node) {
+    return this.nodeSet.has(node);
   }
 }

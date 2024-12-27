@@ -79,6 +79,9 @@ export default class Grid {
     const southWestNeighbor = this.southWest(row, col);
     if (southWestNeighbor) neighbours.push(southWestNeighbor);
 
+    // remove neighbord that are undefined
+    neighbours = neighbours.filter((neighbour) => neighbour !== undefined);
+
     return neighbours;
   }
 

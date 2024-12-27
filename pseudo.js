@@ -1,4 +1,5 @@
 // *********** A* pseudo code ***********
+// could also use linkedlist as pathlist
 
 function reconstructPathFromStartToGoal(cameFrom, currentNode) {
   // create list to add nodes from path starting at goal moving towards start

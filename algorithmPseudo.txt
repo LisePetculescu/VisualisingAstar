@@ -66,6 +66,15 @@ then it checks it's neighbors fScore, and stores them so the lowest value neighb
             Left child: 2 * 0 + 1 = 1 
             Right child: 2 * 0 + 2 = 2 
             Parent: (0 - 1) / 2 = -1 / 2 = -1 (root has no parent) ((can not be -0,5 index in array))
+    adding a set() to the minHeap, to keep track of nodes 
+    * used for checking if a node exits in the heap without havoing to loop through all nodes in the heap.
+    * the set() uses hashing for the added value, this means it is stored in a memory effecient way. 
+    * Insertion in Minheap: O(log n) + O(1) = O(log n)
+        (Adding to the Set is O(1), and heap insertion remains O(log n).)
+    * Extraction from MinHeap: O(log n) + O(1) = O(log n)
+        (Removing from the Set is O(1), and heap extraction remains O(log n).)
+    * to see if node is in set (and heap): O(1)
+        (Checking in the Set is O(1). checking in minHeap in O(n), as we might have to loop through every node).
 
 predesessorsList = new Map() - empty map
 predesessorsList[n] --> storing the predessesors to the node, that currently has the cheapest path from start to n

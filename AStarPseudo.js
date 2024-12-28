@@ -62,7 +62,7 @@ function AStar(startNode, goalNode) {
   while (openSet.length > 0) {
     // set currentNode to node in the openSet that has the lowest fScore
     // in a minHeap this is the root, and it finds it in O(log n) time.
-    currentNode = openSet.peek();
+    currentNode = openSet.extractMin();
     // currentNode = openSet["node with lowest fScore"];
 
     // check if currentNode is the goalNode

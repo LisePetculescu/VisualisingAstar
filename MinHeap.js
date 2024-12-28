@@ -1,4 +1,5 @@
 // source: https://en.wikipedia.org/wiki/Heap_(data_structure)
+import Node from './Node.js';
 
 export default class MinHeap {
   constructor(heap = []) {

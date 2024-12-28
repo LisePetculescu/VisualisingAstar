@@ -1,20 +1,19 @@
-import Node from "./Node.js";
 import MinHeap from "./MinHeap.js";
 
 // ******* Helper functions *******
 
-function reconstructPath(goalNode) {
+function reconstructPath(cameFrom, goalNode) {
   // initiate an array to push the path nodes into, from goal to start
   let reconstructedPathList = [];
 
   let current = goalNode;
 
-  while (current !== null) {
+  while (cameFrom.has(current)) {
+    // set current to the predesessor of the current node
+    current = cameFrom.get(current);
+
     // add new current to pathList
     reconstructedPathList.push(current);
-
-    // set current to the predesessor of the current node
-    current = current.parent;
   }
 
   // reversing the list so first node is the startNode and it ends with the goalNode
@@ -60,15 +59,18 @@ export default function A_Star(grid, startNode, goalNode) {
     // check if currentNode is the goalNode
     // if yes, the cheapest path has been found
     if (currentNode === goalNode) {
-      return reconstructPath(goalNode);
+      return reconstructPath(cameFrom, goalNode);
     }
+
+    // remove currentNode from openSet as it has been evaluated
+    openSet.removeNode(currentNode);
 
     // get all neighbours of the currentNode that are not obstacles
     let neighbours = grid.neighbours(currentNode);
 
     // iterate through all neighbours
     for (let neighbour of neighbours) {
-      // if neighbour is an obstacle, skip it
+      // if neighbour is an obstacle (ex. a wall), skip it
       if (neighbour.isObstacle) {
         continue;
       }
@@ -78,19 +80,21 @@ export default function A_Star(grid, startNode, goalNode) {
        in this case, the cost is 1 for all neighbours */
       let tentativeGScore = currentNode.gScore + 1;
 
-      // if the neighbour is not in the openSet, add it
-      if (!openSet.contains(neighbour)) {
+      if (tentativeGScore < neighbour.gScore) {
+        // add currentNode as predessesor to the neighbor to cameFrom map
+        cameFrom.set(neighbour, currentNode);
+
+        // update gScore and fScore for neighbour
+        neighbour.updateScores(tentativeGScore, heuristic(neighbour, goalNode));
+
+        // rebalance openSet if neighbour is already in it and the new path is cheaper
+        // this also makes sure the neighbour is in the openSet with the new gScore
+        const index = openSet.indexOf(neighbour);
+        if (index !== -1) {
+          openSet.removeNode(index);
+        }
         openSet.insert(neighbour);
-      } else if (tentativeGScore >= neighbour.gScore) {
-        // if the neighbour is already in the openSet and the new path is not cheaper, skip it
-        continue;
       }
-
-      // this path is the best until now, so record it
-      cameFrom.set(neighbour, currentNode);
-
-      // update scores for neighbour
-      neighbour.updateScores(tentativeGScore, heuristic(neighbour, goalNode));
     }
   }
 

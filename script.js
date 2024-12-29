@@ -6,6 +6,8 @@ function start() {
   console.log("🥳 js is running!");
   // tests();
 
+  createTiles();
+  displayTiles();
   displayPlayer();
   // displayCatLeft();
   // displayCatRight();
@@ -24,22 +26,45 @@ const gameField = {
   height: 500, // px
 };
 
-// 10 x 10
+// // 10 x 10
+// const tiles = [
+//   [0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+//   [2, 2, 0, 0, 2, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+//   [0, 0, 2, 2, 2, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 2, 3, 2],
+//   [0, 0, 0, 0, 0, 0, 0, 2, 1, 1],
+//   [0, 0, 0, 0, 0, 0, 0, 2, 1, 1],
+// ];
+// 20 x 20
 const tiles = [
-  [0, 1, 1, 1, 2, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 2, 0, 0, 0, 0, 0],
-  [0, 1, 1, 1, 2, 0, 0, 0, 0, 0],
-  [0, 1, 2, 2, 2, 0, 0, 0, 0, 0],
-  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  [2, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2],
+  [2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2],
+  [2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2],
+  [2, 2, 2, 2, 2, 0, 0, 2, 0, 0, 0, 2, 2, 0, 2, 2, 2, 2, 2, 2],
+  [2, 0, 0, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2],
+  [2, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2],
+  [2, 2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2],
+  [2, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 2, 2],
+  [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+  [2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 2],
+  [2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2],
+  [2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2],
+  [2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 2],
+  [2, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2],
+  [2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 2, 2, 3, 2, 2],
+  [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 1, 1, 1, 1],
+  [2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1],
 ];
 
-const GRID_WIDTH = tiles[0].length;
 const GRID_HEIGHT = tiles.length;
+const GRID_WIDTH = tiles[0].length;
 const TILE_SIZE = 32; // px
 // // coord = placement in grid = which tile {row, col}
 // // pos = placement on screen = in pixels {x,y}
@@ -110,6 +135,53 @@ let enemy3 = {
 };
 
 // ***************** View *****************
+
+function createTiles() {
+  const background = document.querySelector("#background");
+
+  // Set CSS variables
+  background.style.setProperty("--GRID_WIDTH", GRID_WIDTH);
+  // document.documentElement.style.setProperty("--GRID_WIDTH", GRID_WIDTH);
+  background.style.setProperty("--GRID_HEIGHT", GRID_HEIGHT);
+  // document.documentElement.style.setProperty("--GRID_HEIGHT", GRID_HEIGHT);
+  background.style.setProperty("--TILE_SIZE", `${TILE_SIZE}px`);
+  // document.documentElement.style.setProperty("--TILE_SIZE", `${TILE_SIZE}px`);
+
+  for (let row = 0; row < GRID_HEIGHT; row++) {
+    for (let col = 0; col < GRID_WIDTH; col++) {
+      const tile = document.createElement("div");
+      tile.classList.add("tile");
+      background.appendChild(tile);
+    }
+  }
+}
+
+function getClassForTiletype(tileType) {
+  switch (tileType) {
+    case 0:
+      return "floor";
+    case 1:
+      return "grass";
+    case 2:
+      return "wall";
+    case 3:
+      return "mouseDoor";
+  }
+}
+
+function displayTiles() {
+  const visualTiles = document.querySelectorAll("#background .tile");
+
+  for (let row = 0; row < GRID_HEIGHT; row++) {
+    for (let col = 0; col < GRID_WIDTH; col++) {
+      const tileTypeNumber = getTileAtCoord({ row: row, col: col });
+      const tileType = getClassForTiletype(tileTypeNumber);
+      const tile = row * GRID_WIDTH + col;
+      const visualTile = visualTiles[tile];
+      visualTile.className = "tile " + tileType;
+    }
+  }
+}
 
 function displayPlayer() {
   const shownPlayer = document.querySelector("#player");

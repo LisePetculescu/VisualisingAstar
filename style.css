@@ -23,31 +23,50 @@ header h4 {
 }
 
 #gamefield {
+  display: grid;
   width: 600px;
-  height: 500px;
+  height: 600px;
   border: red 5px double;
   box-shadow: 0px 0px 10px 5px #323232;
   background-color: rgb(40, 40, 40);
+
 }
 
 #background {
-  grid-area: 1 / 1;
   display: grid;
+  grid-area: 1 /2;
   grid-template-columns: repeat(var(--GRID_WIDTH), max-content);
 }
 
 #background .tile {
-  width: calc(var(--TILE_SIZE) * 1);
+  width: calc(var(--TILE_SIZE) * 1px);
   aspect-ratio: 1 / 1;
   background-repeat: no-repeat;
   background-size: 100%;
   image-rendering: pixelated;
 
-  background-image: url('');
+  /* background-image: url('sprites/tiles/floor_planks.png'); */
+}
+
+#background .tile.wall {
+  background-image: url("./sprites/tiles/wall.png");
+}
+
+#background .tile.floor {
+  background-image: url("./sprites/tiles/floor_planks.png");
+}
+
+#background .tile.mouseDoor {
+  /* background-image: url("./sprites/tiles/gate.png"); */
+  background-image: url("./sprites/tiles/door.png");
+}
+
+#background .tile.grass {
+  background-image: url("./sprites/tiles/flowers.png");
 }
 
 #player {
-  width: 20px;
+  width: 15px;
   aspect-ratio: 12/20;
   background-image: url("./sprites/mouse.png");
   background-position: 10% 70%;
@@ -80,7 +99,7 @@ header h4 {
 }
 
 #enemy3 {
-  width: 40px;
+  width: 30px;
   aspect-ratio: 16/20;
   background-image: url("./sprites/Character\ 7.png");
   background-size: 400% 400%;

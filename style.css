@@ -30,15 +30,31 @@ header h4 {
   background-color: rgb(40, 40, 40);
 }
 
+#background {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: repeat(var(--GRID_WIDTH), max-content);
+}
+
+#background .tile {
+  width: calc(var(--TILE_SIZE) * 1);
+  aspect-ratio: 1 / 1;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  image-rendering: pixelated;
+
+  background-image: url('');
+}
+
 #player {
-  width: 30px;
-  aspect-ratio: 16/20;
+  width: 20px;
+  aspect-ratio: 12/20;
   background-image: url("./sprites/mouse.png");
   background-position: 10% 70%;
-  background-size: 500% 500%;
+  background-size: 600% 600%;
   image-rendering: pixelated;
   position: absolute;
-  border: red 2px solid;
+  border: red 2px dotted;
 }
 
 #enemy1 {
@@ -49,7 +65,7 @@ header h4 {
   background-size: 2500% 1100%; /* Scale to match the sprites */
   image-rendering: pixelated;
   position: absolute;
-  border: red 2px solid;
+  border: red 2px dotted;
 }
 
 #enemy2 {
@@ -60,7 +76,7 @@ header h4 {
   background-position: 33.8% 30%;
   image-rendering: pixelated;
   position: absolute;
-  border: red 2px solid;
+  border: red 2px dotted;
 }
 
 #enemy3 {
@@ -70,5 +86,5 @@ header h4 {
   background-size: 400% 400%;
   image-rendering: pixelated;
   position: absolute;
-  border: red 2px solid;
+  border: red 2px dotted;
 }

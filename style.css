@@ -26,7 +26,7 @@ header h4 {
   display: grid;
   width: 600px;
   height: 600px;
-  border: red 5px double;
+  /* border: red 5px double; */
   box-shadow: 0px 0px 10px 5px #323232;
   background-color: rgb(40, 40, 40);
 
@@ -65,7 +65,7 @@ header h4 {
   background-image: url("./sprites/tiles/flowers.png");
 }
 
-#player {
+.player {
   width: 15px;
   aspect-ratio: 12/20;
   background-image: url("./sprites/mouse.png");
@@ -76,7 +76,7 @@ header h4 {
   border: red 2px dotted;
 }
 
-#enemy1 {
+.enemy1 {
   width: 50px;
   aspect-ratio: 10 / 10;
   background-image: url("./sprites/cat.png");
@@ -87,7 +87,7 @@ header h4 {
   border: red 2px dotted;
 }
 
-#enemy2 {
+.enemy2 {
   width: 50px;
   aspect-ratio: 10 / 10;
   background-image: url("./sprites/cat.png");
@@ -98,7 +98,7 @@ header h4 {
   border: red 2px dotted;
 }
 
-#enemy3 {
+.enemy3 {
   width: 30px;
   aspect-ratio: 16/20;
   background-image: url("./sprites/Character\ 7.png");

@@ -7,6 +7,8 @@ function start() {
   // tests();
 
   createTiles();
+  createPlayer();
+  createAlgorithmEnemy();
   displayTiles();
   displayPlayer();
   // displayCatLeft();
@@ -23,22 +25,9 @@ function tests() {
 
 const gameField = {
   width: 600, //px
-  height: 500, // px
+  height: 600, // px
 };
 
-// // 10 x 10
-// const tiles = [
-//   [0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
-//   [0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
-//   [2, 2, 0, 0, 2, 0, 0, 0, 0, 0],
-//   [0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
-//   [0, 0, 2, 2, 2, 0, 0, 0, 0, 0],
-//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-//   [0, 0, 0, 0, 0, 0, 0, 2, 3, 2],
-//   [0, 0, 0, 0, 0, 0, 0, 2, 1, 1],
-//   [0, 0, 0, 0, 0, 0, 0, 2, 1, 1],
-// ];
 // 20 x 20
 const tiles = [
   [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
@@ -100,7 +89,7 @@ let player = {
   y: 80,
   width: 30,
   height: 20,
-  speed: 50,
+  speed: 60,
   moving: false,
 };
 
@@ -126,11 +115,11 @@ let enemy2 = {
 
 // girl / algorithm
 let enemy3 = {
-  x: gameField.width / 2 - 20,
+  x: 550,
   y: gameField.height - 60,
   width: 40,
   height: 50,
-  speed: 60,
+  speed: 50,
   moving: true,
 };
 
@@ -141,11 +130,10 @@ function createTiles() {
 
   // Set CSS variables
   background.style.setProperty("--GRID_WIDTH", GRID_WIDTH);
-  // document.documentElement.style.setProperty("--GRID_WIDTH", GRID_WIDTH);
+
   background.style.setProperty("--GRID_HEIGHT", GRID_HEIGHT);
-  // document.documentElement.style.setProperty("--GRID_HEIGHT", GRID_HEIGHT);
+
   background.style.setProperty("--TILE_SIZE", `${TILE_SIZE}px`);
-  // document.documentElement.style.setProperty("--TILE_SIZE", `${TILE_SIZE}px`);
 
   for (let row = 0; row < GRID_HEIGHT; row++) {
     for (let col = 0; col < GRID_WIDTH; col++) {
@@ -183,10 +171,32 @@ function displayTiles() {
   }
 }
 
+function createPlayer() {
+  const characters = document.querySelector("#characters");
+
+  const player = document.createElement("div");
+  player.classList.add("player");
+  characters.appendChild(player);
+}
+
 function displayPlayer() {
-  const shownPlayer = document.querySelector("#player");
+  const shownPlayer = document.querySelector(".player");
 
   shownPlayer.style.translate = `${player.x}px ${player.y}px`;
+}
+
+function createAlgorithmEnemy() {
+  const characters = document.querySelector("#characters");
+
+  const algorithmEnemy = document.createElement("div");
+  algorithmEnemy.classList.add("enemy3");
+  characters.appendChild(algorithmEnemy);
+}
+
+function displayAlgorithmEnemy() {
+  const shownAlgorithmEnemy = document.querySelector(".enemy3");
+
+  shownAlgorithmEnemy.style.translate = `${enemy3.x}px ${enemy3.y}px`;
 }
 
 function displayCatRight() {
@@ -199,12 +209,6 @@ function displayCatLeft() {
   const shownCatRight = document.querySelector("#enemy1");
 
   shownCatRight.style.translate = `${enemy1.x}px ${enemy1.y}px`;
-}
-
-function displayAlgorithmEnemy() {
-  const shownAlgorithmEnemy = document.querySelector("#enemy3");
-
-  shownAlgorithmEnemy.style.translate = `${enemy3.x}px ${enemy3.y}px`;
 }
 
 // ***************** Controller *****************

@@ -1,9 +1,10 @@
 window.addEventListener("load", start);
-import testMinHeap from "./test_minHeap.js";
+import testMinHeap from "./helperFunctions/test_minHeap.js";
+import testTileMap from "./helperFunctions/testTileMap.js";
 
 function start() {
   console.log("🥳 js is running!");
-  tests();
+  // tests();
 
   displayPlayer();
   // displayCatLeft();
@@ -12,16 +13,61 @@ function start() {
 }
 
 function tests() {
-
   testMinHeap();
+  testTileMap();
 }
 
 // ***************** Model *****************
 
 const gameField = {
   width: 600, //px
-  height: 500 // px
+  height: 500, // px
 };
+
+// 10 x 10
+const tiles = [
+  [0, 1, 1, 1, 2, 0, 0, 0, 0, 0],
+  [0, 0, 0, 1, 2, 0, 0, 0, 0, 0],
+  [0, 1, 1, 1, 2, 0, 0, 0, 0, 0],
+  [0, 1, 2, 2, 2, 0, 0, 0, 0, 0],
+  [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+];
+
+const GRID_WIDTH = tiles[0].length;
+const GRID_HEIGHT = tiles.length;
+const TILE_SIZE = 32; // px
+// // coord = placement in grid = which tile {row, col}
+// // pos = placement on screen = in pixels {x,y}
+
+// returns the tile type at the given {row,col}
+function getTileAtCoord({ row, col }) {
+  return tiles[row][col];
+}
+
+// returns the the tile type at {row, col} calculated out from pos {x,y}
+function getTileAtPos({ x, y }) {
+  return getTileAtCoord(coordFromPos({ x: x, y: y }));
+}
+
+// returns a coord {row, col} object calculated from a pos {x,y}
+function coordFromPos({ x, y }) {
+  const row = Math.floor(x / TILE_SIZE);
+  const col = Math.floor(y / TILE_SIZE);
+
+  return { row, col };
+}
+
+// returns a pos {x,y} calculated from a coord {row, col}
+function posFromCoord({ row, col }) {
+  const x = row * TILE_SIZE;
+  const y = col * TILE_SIZE;
+  return { x, y };
+}
 
 // rodent
 let player = {
@@ -30,7 +76,7 @@ let player = {
   width: 30,
   height: 20,
   speed: 50,
-  moving: false
+  moving: false,
 };
 
 // cat left
@@ -40,7 +86,7 @@ let enemy1 = {
   width: 30,
   height: 40,
   speed: 60,
-  moving: true
+  moving: true,
 };
 
 // cat right
@@ -50,7 +96,7 @@ let enemy2 = {
   width: 30,
   height: 40,
   speed: 60,
-  moving: true
+  moving: true,
 };
 
 // girl / algorithm
@@ -60,7 +106,7 @@ let enemy3 = {
   width: 40,
   height: 50,
   speed: 60,
-  moving: true
+  moving: true,
 };
 
 // ***************** View *****************

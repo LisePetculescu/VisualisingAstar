@@ -4,7 +4,10 @@ export default class Grid {
   grid = [];
 
   constructor(rows, cols) {
-    this.grid = [];
+    this.createGrid(rows, cols);
+  }
+
+  createGrid(rows, cols) {
     let i = 0;
     for (let r = 0; r < rows; r++) {
       this.grid.push([]);
@@ -12,7 +15,6 @@ export default class Grid {
         this.grid[r].push(new Node(i++, r, c));
       }
     }
-    console.log(this.grid);
   }
 
   paramsHelper(rowOrObj, col) {
@@ -24,10 +26,15 @@ export default class Grid {
   }
 
   //   - `set( row, col, value )` - sætter `value` på den angivne plads.
-  set(rowOrObj, colParam, value) {
+  set(rowOrObj, colParam, newNode) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    this.grid[row][col] = value;
+    // Ensure the newNode is a valid Node object
+    if (!newNode || newNode instanceof Node) {
+      throw new Error("Not a valid node object");
+    }
+    this.grid[row][col] = newNode;
   }
+
 
   // - `get( row, col )` - returnerer node på den angivne plads
   get(rowOrObj, colParam) {
@@ -86,11 +93,11 @@ export default class Grid {
   }
 
   // - `neighbourValues( row, col )` - returnerer en liste over alle nabocellers values.
-  neighbourValues(rowOrObj, colParam) {
+  neighbourValues(rowOrObj, colParam, prop = id) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
     let values = [];
     this.neighbours({ row, col }).forEach((neighbour) => {
-      values.push(neighbour.value);
+      values.push(neighbour[prop]);
     });
     return values;
   }
@@ -107,83 +114,94 @@ export default class Grid {
     return this.south({ row, col });
   }
 
+  isValid(row, col) {
+    return row >= 0 && row < this.rows() && col >= 0 && col < this.cols();
+  }
+
   // - `north( row, col )` - returnerer cellen over denne, eller undefined, hvis der ikke er nogen
   north(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row - 1 < 0 || col >= this.cols()) {
-      return undefined;
-    } else {
+    if (this.isValid(row - 1, col)) {
       return this.grid[row - 1][col];
+    } else {
+      return undefined;
     }
   }
 
   // - `south( row, col )` - returnerer cellen under denne, eller undefined, hvis der ikke er nogen
   south(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row + 1 >= this.rows() || col >= this.cols()) {
-      return undefined;
-    } else {
+
+    if (this.isValid(row + 1, col)) {
       return this.grid[row + 1][col];
+    } else {
+      return undefined;
     }
   }
 
   // - `west( row, col )` - returnerer cellen til venstre for denne, eller undefined, hvis der ikke er nogen
   west(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row >= this.rows() || col - 1 < 0) {
-      return undefined;
-    } else {
+
+    if (this.isValid(row, col - 1)) {
       return this.grid[row][col - 1];
+    } else {
+      return undefined;
     }
   }
 
   // - `east( row, col )` - returnerer cellen til højre for denne, eller undefined, hvis der ikke er nogen
   east(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row >= this.rows() || col + 1 >= this.cols()) {
-      return undefined;
-    } else {
+
+    if (this.isValid(row, col + 1)) {
       return this.grid[row][col + 1];
+    } else {
+      return undefined;
     }
   }
 
   northEast(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row - 1 < 0 || col + 1 >= this.cols()) {
-      return undefined;
-    } else {
+
+    if (this.isValid(row - 1, col + 1)) {
       return this.grid[row - 1][col + 1];
+    } else {
+      return undefined;
     }
   }
 
   northWest(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row - 1 < 0 || col - 1 < 0) {
-      return undefined;
-    } else {
+
+    if (this.isValid(row - 1, col - 1)) {
       return this.grid[row - 1][col - 1];
+    } else {
+      return undefined;
     }
   }
 
   southEast(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row + 1 >= this.rows() || col + 1 >= this.cols()) {
-      return undefined;
-    } else {
+
+    if (this.isValid(row + 1, col + 1)) {
       return this.grid[row + 1][col + 1];
+    } else {
+      return undefined;
     }
   }
 
   southWest(rowOrObj, colParam) {
     const { row, col } = this.paramsHelper(rowOrObj, colParam);
-    if (row + 1 >= this.rows() || col - 1 < 0) {
-      return undefined;
-    } else {
+
+    if (this.isValid(row + 1, col - 1)) {
       return this.grid[row + 1][col - 1];
+    } else {
+      return undefined;
     }
   }
 
-  // Der skal være et par metoder til at fortælle noget om strukturen
+  //  metoder til at fortælle noget om strukturen
 
   // - `rows()` - returnerer antallet af rækker
   rows() {
@@ -200,13 +218,17 @@ export default class Grid {
     return this.rows() * this.cols();
   }
 
-  // - `fill( value )` - skriver den angivne value ind i alle celler
-  fill(value) {
+  // - `fill( node )` - skriver den angivne node ind i alle celler
+  fill(node) {
     for (let r = 0; r < this.rows(); r++) {
       for (let c = 0; c < this.cols(); c++) {
-        this.grid[r][c] = value;
+        this.grid[r][c] = new Node(node);
       }
     }
-    // return value;
+  }
+
+  // - `print()` - viser griddet i konsollen
+  print() {
+    console.log(this.grid);
   }
 }

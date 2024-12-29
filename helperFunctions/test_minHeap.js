@@ -31,7 +31,9 @@ function runAllTests() {
   testIsEmptyAndSize();
   console.log("");
 
-  console.log("All tests completed.");
+  console.log("All MinHeap tests completed.");
+  console.log(" ");
+  
 }
 
 function testPeek() {

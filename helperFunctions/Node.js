@@ -1,5 +1,5 @@
 export default class Node {
-  constructor(id, y, x, gScore = Infinity, hScore = 0, parent = null, isObstacle = false) {
+  constructor(id, y, x, gScore = Infinity, hScore = 0, parent = null, isObstacle = false, tileTypeNumber = 0) {
     this.id = id;
 
     //coordinates in grid
@@ -18,6 +18,8 @@ export default class Node {
 
     // to rule out nodes that are obstacles from being visited
     this.isObstacle = isObstacle;
+
+    this.tileTypeNumber = tileTypeNumber;
   }
 
   // comparing fScores to use in MinHeap
@@ -37,5 +39,10 @@ export default class Node {
   // returns true if it is the same node it is comparing to
   isSameNode(otherNode) {
     return this.id === otherNode.id;
+  }
+
+  // returns numbervalue for tileType ex. 0 = grass in game model
+  getTileTypeNumber() {
+    return this.tileTypeNumber;
   }
 }

@@ -13,7 +13,11 @@ function start() {
   createAlgorithmEnemy();
 
   displayTiles();
+  // debugHighlightTile({ row: 1, col: 1 });
+
   displayPlayer();
+  // debugShowTileUnderPlayer(player);
+
   displayAlgorithmEnemy();
   // displayCatLeft();
   // displayCatRight();
@@ -65,26 +69,28 @@ function startGame() {
 
 // ***************** Model *****************
 
-
-
 // rodent
 let player = {
-  x: 360,
-  y: 290,
-  width: 30,
-  height: 20,
-  speed: 60, // px/s
+  x: 400,
+  y: 350,
+  width: 15,
+  height: 25,
+  regX: 8,
+  regY: 10,
+  speed: 80, // px/s
   moving: false,
   animationDirection: "",
 };
 
 // girl / algorithm
 let enemy3 = {
-  x: 550,
-  y: 550,
-  width: 40,
+  x: 600,
+  y: 620,
+  width: 30,
   height: 50,
-  speed: 50, // px/s
+  regX: 15,
+  regY: 25,
+  speed: 60, // px/s
   moving: true,
   animationDirection: "",
 };
@@ -133,7 +139,7 @@ const tiles = [
   [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1],
 ];
 
-const TILE_SIZE = 32; // px
+const TILE_SIZE = 35;
 const GRID_HEIGHT = tiles.length;
 const GRID_WIDTH = tiles[0].length;
 
@@ -188,6 +194,8 @@ function getTileCoordUnder(player) {
 
 // ***************** View *****************
 
+// ********* Tiles *********
+
 function createTiles() {
   const background = document.querySelector("#background");
 
@@ -221,7 +229,7 @@ function getClassForTiletype(tileType) {
 }
 
 function displayTiles() {
-  const visualTiles = document.querySelectorAll("#background .tile");
+  const visualTiles = document.querySelectorAll(".tile");
 
   for (let row = 0; row < GRID_HEIGHT; row++) {
     for (let col = 0; col < GRID_WIDTH; col++) {
@@ -234,6 +242,17 @@ function displayTiles() {
   }
 }
 
+// returns the tile div for given coords
+function getVisualTileFromCoords({ row, col }) {
+  const visualTiles = document.querySelectorAll(".tile");
+
+  const tile = row * GRID_WIDTH + col;
+  const visualTile = visualTiles[tile];
+
+  return visualTile;
+}
+
+// ********* Player *********
 function createPlayer() {
   const characters = document.querySelector("#characters");
 
@@ -245,8 +264,10 @@ function createPlayer() {
 function displayPlayer() {
   const shownPlayer = document.querySelector(".player");
 
-  shownPlayer.style.translate = `${player.x}px ${player.y}px`;
+  shownPlayer.style.translate = `${player.x - player.regX}px ${player.y - player.regY}px`;
 }
+
+// ********* Enemy *********
 
 function createAlgorithmEnemy() {
   const characters = document.querySelector("#characters");
@@ -259,7 +280,81 @@ function createAlgorithmEnemy() {
 function displayAlgorithmEnemy() {
   const shownAlgorithmEnemy = document.querySelector(".enemy3");
 
-  shownAlgorithmEnemy.style.translate = `${enemy3.x}px ${enemy3.y}px`;
+  shownAlgorithmEnemy.style.translate = `${enemy3.x - enemy3.regX}px ${enemy3.y - enemy3.regY}px`;
+}
+
+// ********* Debugging *********
+function debugHighlightTile({ row, col }) {
+  const visualTiles = document.querySelectorAll(".tile");
+
+  const tile = row * GRID_WIDTH + col;
+  const visualTile = visualTiles[tile];
+  visualTile.classList.add("highlight");
+}
+
+function debugUnHighlightTile({ row, col }) {
+  const visualTiles = document.querySelectorAll(".tile");
+
+  const tile = row * GRID_WIDTH + col;
+  const visualTile = visualTiles[tile];
+  visualTile.classList.remove("highlight");
+}
+
+let previousTile = undefined;
+function debugShowTileUnderPlayer() {
+  const tileUnderPlayer = getTileCoordUnder(player);
+  const tileToHighlight = getVisualTileFromCoords(tileUnderPlayer);
+
+  if (tileToHighlight) {
+    if (previousTile) {
+      const previousHighlightedTile = getVisualTileFromCoords(previousTile);
+      if (previousHighlightedTile) {
+        previousHighlightedTile.classList.remove("highlight");
+      }
+    }
+  }
+
+  tileToHighlight.classList.add("highlight");
+
+  previousTile = tileUnderPlayer;
+}
+
+function debugShowPlayerRect() {
+  const visualPlayer = document.querySelector(".player");
+
+  visualPlayer.classList.add("show-rect");
+}
+
+function debugShowPlayerRegPoint() {
+  const visualPlayer = document.querySelector(".player");
+
+  visualPlayer.style.setProperty("--regX", `${player.regX}px`);
+  visualPlayer.style.setProperty("--regY", `${player.regY}px`);
+
+  visualPlayer.classList.add("show-reg-point");
+}
+
+function debugShowEnemy3Rect() {
+  const visualEnemy = document.querySelector(".enemy3");
+
+  visualEnemy.classList.add("show-rect");
+}
+
+function debugShowEnemy3RegPoint() {
+  const visualEnemy = document.querySelector(".enemy3");
+
+  visualEnemy.style.setProperty("--regX", `${enemy3.regX}px`);
+  visualEnemy.style.setProperty("--regY", `${enemy3.regY}px`);
+
+  visualEnemy.classList.add("show-reg-point");
+}
+
+function showDebugging() {
+  debugShowTileUnderPlayer();
+  debugShowPlayerRect();
+  debugShowPlayerRegPoint();
+  debugShowEnemy3Rect();
+  debugShowEnemy3RegPoint();
 }
 
 // function displayCatRight() {
@@ -287,6 +382,7 @@ function tick(time) {
 
   movePlayer(deltaTime);
   displayPlayer();
+  showDebugging();
 }
 
 // ***************** Controller *****************
@@ -300,7 +396,7 @@ let controls = {
 };
 
 function updateKeyState(key, isPressed) {
-  console.log(key, isPressed);
+  // console.log(key, isPressed);
 
   switch (key) {
     case "w":
@@ -366,7 +462,7 @@ function movePlayer(deltaTime) {
   position.x += movement.x;
   position.y += movement.y;
 
-  console.log(player.x, position.x);
+  // console.log(player.x, position.x);
 
   // if temp position is valid update playes position
   if (canMove(player, position)) {
@@ -376,7 +472,28 @@ function movePlayer(deltaTime) {
 }
 
 function canMove(player, position) {
-  if (position.x < 0 || position.y < 0 || position.x > gameField.width - player.width || position.y > gameField.height - player.height) return false;
+  // if (position.x < 0 || position.y < 0 || position.x > GAMEFIELD_WIDTH - player.width || position.y > GAMEFIELD_HEIGHT - player.height) return false;
 
+  const coord = getTileCoordUnder(position);
+  // console.log("coord: ", coord);
+  // console.log(GRID_HEIGHT);
+
+  if (coord.row < 0 || coord.row >= GRID_HEIGHT || coord.col < 0 || coord.col >= GRID_WIDTH) {
+    return false;
+  }
+
+  const tileValue = getTileAtPos(position);
+  // console.log(tileValue);
+
+  switch (tileValue) {
+    // walkable tiletypes
+    case 0:
+    case 1:
+    case 3:
+      return true;
+    // non walkable tiletype
+    case 2:
+      return false;
+  }
   return true;
 }

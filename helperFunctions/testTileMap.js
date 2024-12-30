@@ -49,7 +49,7 @@ export default function testTileMap() {
 
   // returns the the tile type at {row, col} calculated out from pos {x,y}
   function getTileAtPos({ x, y }) {
-    return getTileAtCoord(coordFromPos({ x: 96, y: 64 }));
+    return getTileAtCoord(coordFromPos({ x: x, y: y }));
   }
 
   // returns a coord {row, col} object calculated from a pos {x,y}

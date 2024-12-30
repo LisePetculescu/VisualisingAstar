@@ -1,4 +1,5 @@
 window.addEventListener("load", start);
+
 import testMinHeap from "./helperFunctions/test_minHeap.js";
 import testTileMap from "./helperFunctions/testTileMap.js";
 
@@ -6,14 +7,27 @@ function start() {
   console.log("🥳 js is running!");
   // tests();
 
+  createGameField();
   createTiles();
   createPlayer();
   createAlgorithmEnemy();
+
   displayTiles();
   displayPlayer();
+  displayAlgorithmEnemy();
   // displayCatLeft();
   // displayCatRight();
-  displayAlgorithmEnemy();
+
+  document.querySelector("#btn-playState").addEventListener("click", startGame);
+  // check which key is pressed
+  document.addEventListener("keydown", (event) => {
+    updateKeyState(event.key, true);
+  });
+
+  // check when key is no longer pressed
+  document.addEventListener("keyup", (event) => {
+    updateKeyState(event.key, false);
+  });
 }
 
 function tests() {
@@ -21,12 +35,79 @@ function tests() {
   testTileMap();
 }
 
+let lastTime = 0;
+let gameRunning = false;
+
+function startGame() {
+  const button = document.querySelector("#btn-playState");
+  gameRunning = !gameRunning;
+  button.textContent = gameRunning ? "Pause" : "Start";
+
+  if (gameRunning) {
+    lastTime = performance.now();
+    requestAnimationFrame(tick);
+  }
+
+  // const button = document.querySelector("#btn-playState");
+
+  // if (gameRunning) {
+  //   // pause game
+  //   gameRunning = false;
+  //   button.innerHTML = "Start";
+  // } else {
+  //   // start game
+  //   gameRunning = true;
+  //   button.innerHTML = "Pause";
+  //   lastTime = performance.now();
+  //   requestAnimationFrame(tick);
+  // }
+}
+
 // ***************** Model *****************
 
-const gameField = {
-  width: 600, //px
-  height: 600, // px
+
+
+// rodent
+let player = {
+  x: 360,
+  y: 290,
+  width: 30,
+  height: 20,
+  speed: 60, // px/s
+  moving: false,
+  animationDirection: "",
 };
+
+// girl / algorithm
+let enemy3 = {
+  x: 550,
+  y: 550,
+  width: 40,
+  height: 50,
+  speed: 50, // px/s
+  moving: true,
+  animationDirection: "",
+};
+
+// // cat left
+// let enemy1 = {
+//   x: 0,
+//   y: gameField.height / 2,
+//   width: 30,
+//   height: 40,
+//   speed: 60, // px/s
+//   moving: true,
+// };
+
+// // cat right
+// let enemy2 = {
+//   x: gameField.width - 50,
+//   y: gameField.height / 2,
+//   width: 30,
+//   height: 40,
+//   speed: 60, // px/s
+//   moving: true,
+// };
 
 // 20 x 20
 const tiles = [
@@ -52,9 +133,25 @@ const tiles = [
   [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1],
 ];
 
+const TILE_SIZE = 32; // px
 const GRID_HEIGHT = tiles.length;
 const GRID_WIDTH = tiles[0].length;
-const TILE_SIZE = 32; // px
+
+const GAMEFIELD_WIDTH = TILE_SIZE * GRID_WIDTH;
+const GAMEFIELD_HEIGHT = TILE_SIZE * GRID_HEIGHT;
+
+function createGameField() {
+  const gamefield = document.querySelector("#gamefield");
+
+  gamefield.style.setProperty("--width", GAMEFIELD_WIDTH);
+  gamefield.style.setProperty("--height", GAMEFIELD_HEIGHT);
+}
+
+// const gameField = {
+//   width: GAMEFIELD_WIDTH, //px
+//   height: GAMEFIELD_HEIGHT, // px
+// };
+
 // // coord = placement in grid = which tile {row, col}
 // // pos = placement on screen = in pixels {x,y}
 
@@ -70,58 +167,24 @@ function getTileAtPos({ x, y }) {
 
 // returns a coord {row, col} object calculated from a pos {x,y}
 function coordFromPos({ x, y }) {
-  const row = Math.floor(x / TILE_SIZE);
-  const col = Math.floor(y / TILE_SIZE);
+  const row = Math.floor(y / TILE_SIZE);
+  const col = Math.floor(x / TILE_SIZE);
 
   return { row, col };
 }
 
 // returns a pos {x,y} calculated from a coord {row, col}
 function posFromCoord({ row, col }) {
-  const x = row * TILE_SIZE;
-  const y = col * TILE_SIZE;
+  const x = col * TILE_SIZE;
+  const y = row * TILE_SIZE;
   return { x, y };
 }
 
-// rodent
-let player = {
-  x: gameField.width / 2 - 32,
-  y: 80,
-  width: 30,
-  height: 20,
-  speed: 60,
-  moving: false,
-};
-
-// cat left
-let enemy1 = {
-  x: 0,
-  y: gameField.height / 2,
-  width: 30,
-  height: 40,
-  speed: 60,
-  moving: true,
-};
-
-// cat right
-let enemy2 = {
-  x: gameField.width - 50,
-  y: gameField.height / 2,
-  width: 30,
-  height: 40,
-  speed: 60,
-  moving: true,
-};
-
-// girl / algorithm
-let enemy3 = {
-  x: 550,
-  y: gameField.height - 60,
-  width: 40,
-  height: 50,
-  speed: 50,
-  moving: true,
-};
+// returns coordinates for the tile a player is on
+function getTileCoordUnder(player) {
+  return coordFromPos({ x: player.x, y: player.y });
+  // return getTileAtPos({ x: player.x, y: player.y });
+}
 
 // ***************** View *****************
 
@@ -199,16 +262,121 @@ function displayAlgorithmEnemy() {
   shownAlgorithmEnemy.style.translate = `${enemy3.x}px ${enemy3.y}px`;
 }
 
-function displayCatRight() {
-  const shownCatRight = document.querySelector("#enemy2");
+// function displayCatRight() {
+//   const shownCatRight = document.querySelector("#enemy2");
 
-  shownCatRight.style.translate = `${enemy2.x}px ${enemy2.y}px`;
-}
+//   shownCatRight.style.translate = `${enemy2.x}px ${enemy2.y}px`;
+// }
 
-function displayCatLeft() {
-  const shownCatRight = document.querySelector("#enemy1");
+// function displayCatLeft() {
+//   const shownCatRight = document.querySelector("#enemy1");
 
-  shownCatRight.style.translate = `${enemy1.x}px ${enemy1.y}px`;
+//   shownCatRight.style.translate = `${enemy1.x}px ${enemy1.y}px`;
+// }
+
+// ***************** Tick / view *****************
+
+function tick(time) {
+  // if gameRunning false pause animations
+  if (!gameRunning) return;
+
+  requestAnimationFrame(tick);
+
+  const deltaTime = (time - lastTime) / 1000;
+  lastTime = time;
+
+  movePlayer(deltaTime);
+  displayPlayer();
 }
 
 // ***************** Controller *****************
+
+// reset keys
+let controls = {
+  up: false,
+  down: false,
+  left: false,
+  right: false,
+};
+
+function updateKeyState(key, isPressed) {
+  console.log(key, isPressed);
+
+  switch (key) {
+    case "w":
+    case "ArrowUp":
+      controls.up = isPressed;
+      break;
+    case "s":
+    case "ArrowDown":
+      controls.down = isPressed;
+      break;
+    case "a":
+    case "ArrowLeft":
+      controls.left = isPressed;
+      break;
+    case "d":
+    case "ArrowRight":
+      controls.right = isPressed;
+      break;
+  }
+}
+
+// check temporary position is valid before moving player object
+let playerDirection = { x: 0, y: 0 };
+function movePlayer(deltaTime) {
+  // const deltaSpeed = player.speed * deltaTime;
+  // player.x = player.x + deltaSpeed;
+  // player.y = player.y +1;
+
+  // reset player direction
+  playerDirection.x = 0;
+  playerDirection.y = 0;
+
+  // check which direction to move player depending on keyPress
+  // y axis
+  if (controls.up) {
+    playerDirection.y = -1;
+  } else if (controls.down) {
+    playerDirection.y = +1;
+  }
+  // x axis
+  if (controls.left) {
+    playerDirection.x = -1;
+  } else if (controls.right) {
+    playerDirection.x = +1;
+  }
+
+  // checks if player is moving - if not return
+  if (playerDirection.x == 0 && playerDirection.y == 0) return;
+
+  // calculate distance to make sure player doesn't move faster diagonally
+  const dist = Math.hypot(playerDirection.x, playerDirection.y);
+  playerDirection.x /= dist;
+  playerDirection.y /= dist;
+
+  // calculate steady players speed for movement
+  const movement = {
+    x: playerDirection.x * player.speed * deltaTime,
+    y: playerDirection.y * player.speed * deltaTime,
+  };
+
+  // update temp position with movement
+  const position = { x: player.x, y: player.y };
+  position.x += movement.x;
+  position.y += movement.y;
+
+  console.log(player.x, position.x);
+
+  // if temp position is valid update playes position
+  if (canMove(player, position)) {
+    player.x = position.x;
+    player.y = position.y;
+  }
+}
+
+function canMove(player, position) {
+  if (position.x < 0 || position.y < 0 || position.x > gameField.width - player.width || position.y > gameField.height - player.height) return false;
+
+  return true;
+}

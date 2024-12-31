@@ -2,25 +2,14 @@ window.addEventListener("load", start);
 
 import testMinHeap from "./helperFunctions/test_minHeap.js";
 import testTileMap from "./helperFunctions/testTileMap.js";
+import Grid from "./helperFunctions/Grid.js";
+import Node from "./helperFunctions/Node.js";
 
 function start() {
   console.log("🥳 js is running!");
   // tests();
 
   createGameField();
-  createTiles();
-  createPlayer();
-  createAlgorithmEnemy();
-
-  displayTiles();
-  // debugHighlightTile({ row: 1, col: 1 });
-
-  displayPlayer();
-  // debugShowTileUnderPlayer(player);
-
-  displayAlgorithmEnemy();
-  // displayCatLeft();
-  // displayCatRight();
 
   document.querySelector("#btn-playState").addEventListener("click", startGame);
   // check which key is pressed
@@ -76,7 +65,7 @@ let player = {
   width: 15,
   height: 25,
   regX: 8,
-  regY: 10,
+  regY: 12,
   speed: 80, // px/s
   moving: false,
   animationDirection: "",
@@ -151,12 +140,25 @@ function createGameField() {
 
   gamefield.style.setProperty("--width", GAMEFIELD_WIDTH);
   gamefield.style.setProperty("--height", GAMEFIELD_HEIGHT);
-}
 
-// const gameField = {
-//   width: GAMEFIELD_WIDTH, //px
-//   height: GAMEFIELD_HEIGHT, // px
-// };
+  // init the Grid for the algorithm
+  const grid = new Grid(GRID_WIDTH, GRID_HEIGHT);
+
+  // init tiles and add them as nodes in grid
+  createTiles(grid);
+  displayTiles();
+
+  createPlayer();
+  displayPlayer();
+
+  createAlgorithmEnemy();
+  displayAlgorithmEnemy();
+
+  console.log(grid);
+
+  // displayCatLeft();
+  // displayCatRight();
+}
 
 // // coord = placement in grid = which tile {row, col}
 // // pos = placement on screen = in pixels {x,y}
@@ -196,14 +198,12 @@ function getTileCoordUnder(player) {
 
 // ********* Tiles *********
 
-function createTiles() {
+function createTiles(grid) {
   const background = document.querySelector("#background");
 
   // Set CSS variables
   background.style.setProperty("--GRID_WIDTH", GRID_WIDTH);
-
   background.style.setProperty("--GRID_HEIGHT", GRID_HEIGHT);
-
   background.style.setProperty("--TILE_SIZE", `${TILE_SIZE}px`);
 
   for (let row = 0; row < GRID_HEIGHT; row++) {
@@ -211,6 +211,16 @@ function createTiles() {
       const tile = document.createElement("div");
       tile.classList.add("tile");
       background.appendChild(tile);
+
+      // create node instaces of the tiles
+      const tileTypeNumber = getTileAtCoord({ row, col });
+      const isObstacle = tileTypeNumber === 2; // 2 = wall
+      const node = new Node(`${row}-${col}`, row, col, Infinity, 0, null, isObstacle, tileTypeNumber);
+
+      console.log(node);
+
+      // add node to grid
+      grid.addNode(node);
     }
   }
 }

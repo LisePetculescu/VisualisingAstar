@@ -1,10 +1,10 @@
 export default class Node {
-  constructor(id, y, x, gScore = Infinity, hScore = 0, parent = null, isObstacle = false, tileTypeNumber = 0) {
+  constructor(id, row, col, gScore = Infinity, hScore = 0, parent = null, isObstacle = false, tileTypeNumber = 0) {
     this.id = id;
 
     //coordinates in grid
-    this.x = x;
-    this.y = y;
+    this.col = col;
+    this.row = row;
 
     // gScore is the cost from startNode to current node
     this.gScore = gScore;

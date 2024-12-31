@@ -12,8 +12,21 @@ export default class Grid {
     for (let r = 0; r < rows; r++) {
       this.grid.push([]);
       for (let c = 0; c < cols; c++) {
-        this.grid[r].push(new Node(i++, r, c));
+        this.grid[r].push(null);
       }
+    }
+  }
+
+  addNode(node) {
+    const { row, col } = node;
+    console.log(node);
+    console.log(row);
+    
+    
+    if (row >= 0 && row < this.grid.length && col >= 0 && col < this.grid[0].length) {
+      this.grid[row][col] = node;
+    } else {
+      throw new Error(`Node not found: row=${row}, col=${col}`);
     }
   }
 
@@ -34,7 +47,6 @@ export default class Grid {
     }
     this.grid[row][col] = newNode;
   }
-
 
   // - `get( row, col )` - returnerer node på den angivne plads
   get(rowOrObj, colParam) {

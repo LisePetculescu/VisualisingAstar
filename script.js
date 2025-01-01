@@ -4,6 +4,7 @@ import testMinHeap from "./helperFunctions/test_minHeap.js";
 import testTileMap from "./helperFunctions/testTileMap.js";
 import Grid from "./helperFunctions/Grid.js";
 import Node from "./helperFunctions/Node.js";
+import A_Star from "./algorithm/AStar.js";
 
 function start() {
   console.log("🥳 js is running!");
@@ -30,6 +31,7 @@ function tests() {
 
 let lastTime = 0;
 let gameRunning = false;
+let pathFound = false;
 
 function startGame() {
   const button = document.querySelector("#btn-playState");
@@ -57,52 +59,6 @@ function startGame() {
 }
 
 // ***************** Model *****************
-
-// rodent
-let player = {
-  x: 400,
-  y: 350,
-  width: 15,
-  height: 25,
-  regX: 8,
-  regY: 12,
-  speed: 80, // px/s
-  moving: false,
-  animationDirection: "",
-};
-
-// girl / algorithm
-let enemy3 = {
-  x: 600,
-  y: 620,
-  width: 30,
-  height: 50,
-  regX: 15,
-  regY: 25,
-  speed: 60, // px/s
-  moving: true,
-  animationDirection: "",
-};
-
-// // cat left
-// let enemy1 = {
-//   x: 0,
-//   y: gameField.height / 2,
-//   width: 30,
-//   height: 40,
-//   speed: 60, // px/s
-//   moving: true,
-// };
-
-// // cat right
-// let enemy2 = {
-//   x: gameField.width - 50,
-//   y: gameField.height / 2,
-//   width: 30,
-//   height: 40,
-//   speed: 60, // px/s
-//   moving: true,
-// };
 
 // 20 x 20
 const tiles = [
@@ -135,6 +91,54 @@ const GRID_WIDTH = tiles[0].length;
 const GAMEFIELD_WIDTH = TILE_SIZE * GRID_WIDTH;
 const GAMEFIELD_HEIGHT = TILE_SIZE * GRID_HEIGHT;
 
+// rodent
+let player = {
+  x: GAMEFIELD_WIDTH / 2 + 20,
+  y: GAMEFIELD_HEIGHT / 2 - 180,
+  width: 15,
+  height: 25,
+  regX: 8,
+  regY: 12,
+  speed: 80, // px/s
+  moving: false,
+  animationDirection: "",
+};
+
+// girl / algorithm
+let enemy3 = {
+  x: GAMEFIELD_WIDTH / 2 - 15,
+  y: GAMEFIELD_HEIGHT - 100,
+  width: 30,
+  height: 50,
+  regX: 15,
+  regY: 25,
+  speed: 60, // px/s
+  moving: true,
+  animationDirection: "",
+};
+
+// // cat left
+// let enemy1 = {
+//   x: 0,
+//   y: gameField.height / 2,
+//   width: 30,
+//   height: 40,
+//   speed: 60, // px/s
+//   moving: true,
+// };
+
+// // cat right
+// let enemy2 = {
+//   x: gameField.width - 50,
+//   y: gameField.height / 2,
+//   width: 30,
+//   height: 40,
+//   speed: 60, // px/s
+//   moving: true,
+// };
+
+let grid;
+
 function createGameField() {
   const gamefield = document.querySelector("#gamefield");
 
@@ -142,11 +146,12 @@ function createGameField() {
   gamefield.style.setProperty("--height", GAMEFIELD_HEIGHT);
 
   // init the Grid for the algorithm
-  const grid = new Grid(GRID_WIDTH, GRID_HEIGHT);
+  grid = new Grid(GRID_WIDTH, GRID_HEIGHT);
 
   // init tiles and add them as nodes in grid
   createTiles(grid);
   displayTiles();
+  console.log(grid);
 
   createPlayer();
   displayPlayer();
@@ -154,7 +159,7 @@ function createGameField() {
   createAlgorithmEnemy();
   displayAlgorithmEnemy();
 
-  console.log(grid);
+  // initAlgorithm(grid);
 
   // displayCatLeft();
   // displayCatRight();
@@ -214,10 +219,12 @@ function createTiles(grid) {
 
       // create node instaces of the tiles
       const tileTypeNumber = getTileAtCoord({ row, col });
-      const isObstacle = tileTypeNumber === 2; // 2 = wall
+      // 2 = wall & 3 = mousedoor
+      const isObstacle = tileTypeNumber === 2 || tileTypeNumber === 3;
+
       const node = new Node(`${row}-${col}`, row, col, Infinity, 0, null, isObstacle, tileTypeNumber);
 
-      console.log(node);
+      // console.log("Node: ", node);
 
       // add node to grid
       grid.addNode(node);
@@ -291,6 +298,34 @@ function displayAlgorithmEnemy() {
   const shownAlgorithmEnemy = document.querySelector(".enemy3");
 
   shownAlgorithmEnemy.style.translate = `${enemy3.x - enemy3.regX}px ${enemy3.y - enemy3.regY}px`;
+}
+
+// ********* A* Algorithm *********
+
+function initAlgorithm() {
+  const startNode = grid.get(getTileCoordUnder(enemy3));
+  if (!startNode) {
+    console.error("Start node not found");
+    return;
+  }
+  // console.log("Start Node:", startNode);
+
+  const goalNode = grid.get(getTileCoordUnder(player));
+  if (!goalNode) {
+    console.error("Goal node not found");
+    return;
+  }
+  // console.log("Goal Node:", goalNode);
+
+  const pathToWalk = A_Star(grid, startNode, goalNode);
+  console.log("!!!!!!!!!!!!!!!!!!!!!!!!Path: ", pathToWalk);
+
+  if (pathToWalk && pathToWalk.length > 0) {
+    moveEnemy3(pathToWalk);
+    pathFound = true;
+  } else {
+    console.error("No path found");
+  }
 }
 
 // ********* Debugging *********
@@ -393,6 +428,11 @@ function tick(time) {
   movePlayer(deltaTime);
   displayPlayer();
   showDebugging();
+
+  // in no path found yet call the algorithm to move enemy3
+  if (!pathFound) {
+    initAlgorithm();
+  }
 }
 
 // ***************** Controller *****************
@@ -479,6 +519,24 @@ function movePlayer(deltaTime) {
     player.x = position.x;
     player.y = position.y;
   }
+}
+
+// move visualEnemy
+function moveEnemy3(path) {
+  let index = 0;
+
+  function move() {
+    if (index < path.length) {
+      const node = path[index];
+      enemy3.x = node.col * TILE_SIZE + enemy3.regX;
+      enemy3.y = node.row * TILE_SIZE + enemy3.regY;
+      displayAlgorithmEnemy();
+      index++;
+      setTimeout(move, 500); // Adjust the speed as needed
+    }
+  }
+
+  move();
 }
 
 function canMove(player, position) {

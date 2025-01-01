@@ -19,9 +19,7 @@ export default class Grid {
 
   addNode(node) {
     const { row, col } = node;
-    console.log(node);
-    console.log(row);
-    
+    // console.log("Node: ", node);
     
     if (row >= 0 && row < this.grid.length && col >= 0 && col < this.grid[0].length) {
       this.grid[row][col] = node;

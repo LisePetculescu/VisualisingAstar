@@ -163,6 +163,10 @@ export default class MinHeap {
     return -1;
   }
 
+  contains(node) {
+    return this.heap.includes(node);
+  }
+
   // swaps the two nodes at the two given indexes
   swap(index1, index2) {
     const temp = this.heap[index1];

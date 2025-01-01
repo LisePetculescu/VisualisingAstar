@@ -111,8 +111,20 @@ header h4 {
   translate: 0 0;
 }
 
+.tile.highlight-path {
+   outline: 2px dashed rgb(21, 255, 0);
+  translate: 0 0;
+}
+
+.tile.highlight-open-set {
+  outline: 2px solid rgb(24, 143, 223);
+  translate: 0 0;
+  
+}
+
 .player {
   width: 15px;
+  /* width: calc(var(--width) * 1px); */
   aspect-ratio: 12/20;
   background-image: url("./images/mouse.png");
   background-position: 10% 70%;

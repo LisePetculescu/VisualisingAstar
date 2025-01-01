@@ -20,7 +20,7 @@ export default class Grid {
   addNode(node) {
     const { row, col } = node;
     // console.log("Node: ", node);
-    
+
     if (row >= 0 && row < this.grid.length && col >= 0 && col < this.grid[0].length) {
       this.grid[row][col] = node;
     } else {
@@ -240,5 +240,16 @@ export default class Grid {
   // - `print()` - viser griddet i konsollen
   print() {
     console.log(this.grid);
+  }
+
+  // clear the grid
+  clear() {
+    this.grid = [];
+  }
+
+  // reset grid
+  reset(rows, cols) {
+    this.clear();
+    this.createGrid(rows, cols);
   }
 }

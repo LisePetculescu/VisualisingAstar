@@ -655,6 +655,9 @@ function canMove(entity, position) {
 }
 
 function resetGrid() {
+  // empty html before new grid is made
+  const background = document.querySelector("#background");
+  background.innerHTML = "";
   // clear grid and creates a new one with same row, col as before
   grid = new Grid(GRID_WIDTH, GRID_HEIGHT);
 

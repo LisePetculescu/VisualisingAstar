@@ -98,7 +98,7 @@ const initEnemyX = GAMEFIELD_WIDTH / 2 - 15;
 const initEnemyY = GAMEFIELD_HEIGHT - 100;
 
 // girl / algorithm
-let enemy3 = {
+let enemy = {
   x: initEnemyX,
   y: initEnemyY,
   width: 30,
@@ -113,7 +113,7 @@ let enemy3 = {
 let grid;
 
 function createGameField() {
-  console.log("create gamefield");
+  // console.log("create gamefield");
 
   const gamefield = document.querySelector("#gamefield");
 
@@ -126,7 +126,7 @@ function createGameField() {
   // init tiles and add them as nodes in grid
   createTiles(grid);
   displayTiles();
-  console.log(grid);
+  // console.log(grid);
 
   createPlayer();
   displayPlayer();
@@ -175,7 +175,7 @@ function getTileCoordUnder(player) {
 // ********* Tiles *********
 
 function createTiles(grid) {
-  console.log("create tiles");
+  // console.log("create tiles");
 
   const background = document.querySelector("#background");
 
@@ -253,7 +253,7 @@ function createPlayer() {
 
 function displayPlayer() {
   const shownPlayer = document.querySelector(".player");
-
+  // using regX regY to center registration point of player
   shownPlayer.style.translate = `${player.x - player.regX}px ${player.y - player.regY}px`;
 }
 
@@ -263,14 +263,14 @@ function createAlgorithmEnemy() {
   const characters = document.querySelector("#characters");
 
   const algorithmEnemy = document.createElement("div");
-  algorithmEnemy.classList.add("enemy3");
+  algorithmEnemy.classList.add("enemy");
   characters.appendChild(algorithmEnemy);
 }
 
 function displayAlgorithmEnemy() {
-  const shownAlgorithmEnemy = document.querySelector(".enemy3");
-
-  shownAlgorithmEnemy.style.translate = `${enemy3.x - enemy3.regX}px ${enemy3.y - enemy3.regY}px`;
+  const shownAlgorithmEnemy = document.querySelector(".enemy");
+  // using regX regY to center registration point of enemy
+  shownAlgorithmEnemy.style.translate = `${enemy.x - enemy.regX}px ${enemy.y - enemy.regY}px`;
 }
 
 // ********* A* Algorithm *********
@@ -280,7 +280,7 @@ const algorithmRetryDelay = 1000;
 let startNode;
 let goalNode;
 function initAlgorithm() {
-  console.log("before");
+  // console.log("before");
 
   // Reset any previous state to avoid residual values
   startNode = null;
@@ -288,14 +288,14 @@ function initAlgorithm() {
   pathToWalk = [];
   pathFound = false;
 
-  console.log(grid);
+  // console.log(grid);
   grid.fillProp("gScore", Infinity);
   grid.fillProp("hScore", 0);
   grid.fillProp("fScore", Infinity);
-  console.log(grid);
+  // console.log(grid);
 
   // Get start and goal nodes
-  startNode = grid.get(getTileCoordUnder(enemy3));
+  startNode = grid.get(getTileCoordUnder(enemy));
   console.log("startNode enemy:", startNode);
 
   if (!startNode) {
@@ -314,7 +314,7 @@ function initAlgorithm() {
   // Run A* algorithm to find the path
   pathToWalk = A_Star(grid, startNode, goalNode);
   console.log("Path:", pathToWalk);
-  console.log("after");
+  // console.log("after");
 
   // Check if a path was found
   if (pathToWalk && pathToWalk.length > 0) {
@@ -394,17 +394,17 @@ function debugShowPlayerRegPoint() {
   visualPlayer.classList.add("show-reg-point");
 }
 
-function debugShowEnemy3Rect() {
-  const visualEnemy = document.querySelector(".enemy3");
+function debugShowEnemyRect() {
+  const visualEnemy = document.querySelector(".enemy");
 
   visualEnemy.classList.add("show-rect");
 }
 
-function debugShowEnemy3RegPoint() {
-  const visualEnemy = document.querySelector(".enemy3");
+function debugShowEnemyRegPoint() {
+  const visualEnemy = document.querySelector(".enemy");
 
-  visualEnemy.style.setProperty("--regX", `${enemy3.regX}px`);
-  visualEnemy.style.setProperty("--regY", `${enemy3.regY}px`);
+  visualEnemy.style.setProperty("--regX", `${enemy.regX}px`);
+  visualEnemy.style.setProperty("--regY", `${enemy.regY}px`);
 
   visualEnemy.classList.add("show-reg-point");
 }
@@ -413,8 +413,8 @@ function showDebugging() {
   debugShowTileUnderPlayer();
   debugShowPlayerRect();
   debugShowPlayerRegPoint();
-  debugShowEnemy3Rect();
-  debugShowEnemy3RegPoint();
+  debugShowEnemyRect();
+  debugShowEnemyRegPoint();
 }
 
 // ***************** Tick / view *****************
@@ -427,13 +427,13 @@ function tick(time) {
   if (!gameRunning) return;
 
   const currentPlayerTile = getTileCoordUnder(player);
-  const currentEnemyTile = getTileCoordUnder(enemy3);
+  const currentEnemyTile = getTileCoordUnder(enemy);
 
   const playerPosition = posFromCoord(currentPlayerTile);
   const tileValue = getTileAtPos(playerPosition);
 
   if (tileValue === 1) {
-    console.log("game won");
+    console.log("YOU WIN!");
     resetGame();
     return;
   }
@@ -465,11 +465,11 @@ function tick(time) {
   } else {
     moveAlgorithmEnemy(pathToWalk, deltaTime);
     displayAlgorithmEnemy();
-    console.log("Path found, enemy is moving.");
+    // console.log("Path found, enemy is moving.");
   }
 
   if (currentPlayerTile.col === currentEnemyTile.col && currentPlayerTile.row === currentEnemyTile.row) {
-    console.log("Enemy3 has reached the player. Stopping the game.");
+    console.log("GAME OVER! Enemy has reached the player. Stopping the game.");
     // gameRunning = false;
     resetGame();
   }
@@ -565,14 +565,13 @@ let enemyDirection = { x: 0, y: 0 };
 function moveAlgorithmEnemy(pathToWalk, deltaTime) {
   if (!pathToWalk || pathToWalk === 0) return;
 
-  console.log("pathToWalk.length: ", pathToWalk.length);
-  // console.log(getTileCoordUnder(player));
+  // console.log("pathToWalk.length: ", pathToWalk.length);
 
   // should start at index 1 as index 0 is current tile
   const nextNode = pathToWalk[1];
   // console.log("nextNode: ", nextNode);
 
-  const currentCoord = getTileCoordUnder(enemy3);
+  const currentCoord = getTileCoordUnder(enemy);
   // console.log(currentCoord);
 
   // Check if the enemy is on the nextNode tile
@@ -591,8 +590,8 @@ function moveAlgorithmEnemy(pathToWalk, deltaTime) {
   // Convert grid coordinates to pixel position
   const targetPos = posFromCoord(nextNode);
   enemyDirection = {
-    x: targetPos.x - enemy3.x,
-    y: targetPos.y - enemy3.y,
+    x: targetPos.x - enemy.x,
+    y: targetPos.y - enemy.y,
   };
 
   // console.log("enemy direction: ", enemyDirection);
@@ -602,30 +601,32 @@ function moveAlgorithmEnemy(pathToWalk, deltaTime) {
   enemyDirection.x /= dist;
   enemyDirection.y /= dist;
 
-  // calculate steady players speed for movement
+  // calculate steady speed for movement
   const movement = {
-    x: enemyDirection.x * enemy3.speed * deltaTime,
-    y: enemyDirection.y * enemy3.speed * deltaTime,
+    x: enemyDirection.x * enemy.speed * deltaTime,
+    y: enemyDirection.y * enemy.speed * deltaTime,
   };
 
   // Check for collision with walls
-  const newPosition = { x: enemy3.x + movement.x, y: enemy3.y + movement.y };
+  const newPosition = { x: enemy.x + movement.x, y: enemy.y + movement.y };
   // console.log("newPosition: ", newPosition);
 
-  if (canMove(enemy3, newPosition)) {
+  if (canMove(enemy, newPosition)) {
     // Update enemy position
-    enemy3.x = newPosition.x;
-    enemy3.y = newPosition.y;
+    enemy.x = newPosition.x;
+    enemy.y = newPosition.y;
   } else {
     // Adjust movement to avoid obstacle
-    if (!canMove(enemy3, { x: enemy3.x + movement.x, y: enemy3.y })) {
+    // if theres an obstacle to one of the sides - only up or down
+    if (!canMove(enemy, { x: enemy.x + movement.x, y: enemy.y })) {
       movement.x = 0;
     }
-    if (!canMove(enemy3, { x: enemy3.x, y: enemy3.y + movement.y })) {
+    // if theres an obstacle above og below - only move to the side
+    if (!canMove(enemy, { x: enemy.x, y: enemy.y + movement.y })) {
       movement.y = 0;
     }
-    enemy3.x += movement.x;
-    enemy3.y += movement.y;
+    enemy.x += movement.x;
+    enemy.y += movement.y;
   }
 }
 
@@ -683,8 +684,8 @@ function resetCharacters() {
   // resets the characters stored positions
   player.x = initPlayerX;
   player.y = initPlayerY;
-  enemy3.x = initEnemyX;
-  enemy3.y = initEnemyY;
+  enemy.x = initEnemyX;
+  enemy.y = initEnemyY;
 
   createPlayer();
   createAlgorithmEnemy();

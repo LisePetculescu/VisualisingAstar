@@ -173,7 +173,7 @@ header h4 {
   /* border: red 2px dotted; */
 }
 
-.enemy3 {
+.enemy {
   width: 30px;
   aspect-ratio: 16/20;
   background-image: url("./images/Character\ 7.png");

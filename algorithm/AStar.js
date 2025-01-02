@@ -56,14 +56,11 @@ function highlightOpenSet(openSet) {
 // ******* A* Code *******
 
 export default function A_Star(grid, startNode, goalNode) {
-  console.log("#########################");
-  console.log("");
-  console.log("A*: ", "grid: ", grid, "startNode: ",startNode, "goalNode: ", goalNode);
-  console.log("");
-  console.log("#########################");
-
-  console.log("12341234 grid: ",grid);
-  
+  // console.log("#########################");
+  // console.log("");
+  // console.log("A*: ", "grid: ", grid, "startNode: ", startNode, "goalNode: ", goalNode);
+  // console.log("");
+  // console.log("#########################");
 
   // init the openSet as a priority queue using a min-heap
   // the priority is ordered by the node with the lowest fScore at the top
@@ -105,9 +102,6 @@ export default function A_Star(grid, startNode, goalNode) {
       return path;
     }
 
-    // // remove currentNode from openSet as it has been evaluated
-    // openSet.removeNode(currentNode);
-
     // get all neighbours of the currentNode that are not obstacles
     let neighbours = grid.neighbours(currentNode);
     // console.log("A* neighbors: ", neighbours);
@@ -133,35 +127,28 @@ export default function A_Star(grid, startNode, goalNode) {
         // update gScore and fScore for neighbour
         neighbour.updateScores(tentativeGScore, heuristic(neighbour, goalNode));
 
+        // if neighbor is in openSet, remove it, so it can be added again and the heap rebalanced with its new fScore
         // rebalance openSet if neighbour is already in it and the new path is cheaper
         // this also makes sure the neighbour is in the openSet with the new gScore
-        //   const index = openSet.indexOf(neighbour);
-        // console.log("neighbor, index of neighbor:", neighbour, index);
 
-        //   if (index != -1) {
-        //     openSet.removeNode(index);
-        //   }
-        //   openSet.insert(neighbour);'
-
+        // if neighbor is in openSet, update it
         if (openSet.contains(neighbour)) {
-          openSet.removeNode(neighbour);
+          if (openSet.peek() === neighbour) {
+            // If the neighbour is the root, replace it
+            openSet.replaceRoot(neighbour);
+          } else {
+            // Otherwise, remove and reinsert the neighbour
+            openSet.removeNode(neighbour);
+            openSet.insert(neighbour);
+          }
+          highlightOpenSet(openSet.heap);
+        } else {
+          // Insert the neighbour if it's not already in the openSet
+          openSet.insert(neighbour);
           highlightOpenSet(openSet.heap);
         }
-        openSet.insert(neighbour);
-        highlightOpenSet(openSet.heap);
       }
-
-      // else {
-      //   console.log("Skipping neighbour with higher gScore:", neighbour);
-      // }
-
-      // console.log(openSet.size());
     }
-    // Highlight the open set
-    // if (highlightOpenSetCallback) {
-    //   console.log("Highlighting open set");
-    //   highlightOpenSetCallback(openSet.heap);
-    // }
   }
 
   // if the openSet is empty and no path is found, return null

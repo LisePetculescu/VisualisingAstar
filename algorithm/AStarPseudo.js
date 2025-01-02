@@ -67,7 +67,7 @@ function AStar(startNode, goalNode) {
 
     // check if currentNode is the goalNode
     // if yes, the cheapest path has been found
-    if ((currentNode === goalNode)) {
+    if (currentNode === goalNode) {
       return reconstructPathFromStartToGoal(cameFrom, currentNode);
     }
 
@@ -86,7 +86,7 @@ function AStar(startNode, goalNode) {
 
       // check if the tentative_gScore is lower than the neighbors current gScore
       // if the tentative_gScore is smaller, then we have found a cheaper path to this neighbor node
-      if (tentative_gScore <= neighbor.gScore) {
+      if (tentative_gScore < neighbor.gScore) {
         // add currentNode as predessesor of the neighbor node
         cameFrom.set(neighbor, currentNode);
         // cameFrom[neighbor] = current;

@@ -78,23 +78,18 @@ const GRID_WIDTH = tiles[0].length;
 const GAMEFIELD_WIDTH = TILE_SIZE * GRID_WIDTH;
 const GAMEFIELD_HEIGHT = TILE_SIZE * GRID_HEIGHT;
 
-const initPlayerX = 90;
-const initPlayerY = 55;
+const initPlayerX = GAMEFIELD_WIDTH - 200;
+const initPlayerY = 120;
 // rodent
 let player = {
-  // x: GAMEFIELD_WIDTH - 45,
-  // x: GAMEFIELD_WIDTH / 2 + 140,
-  // x: GAMEFIELD_WIDTH / 2 + 140,
-  // x: GAMEFIELD_WIDTH / 2 + 180,
-  // x: GAMEFIELD_WIDTH / 2 + 20,
   x: initPlayerX,
   y: initPlayerY,
-  // y: GAMEFIELD_HEIGHT / 2 - 180,
+
   width: 15,
   height: 25,
   regX: 8,
   regY: 12,
-  speed: 80, // px/s
+  speed: 85, // px/s
   moving: false,
   animationDirection: "",
 };
@@ -114,26 +109,6 @@ let enemy3 = {
   moving: true,
   animationDirection: "",
 };
-
-// // cat left
-// let enemy1 = {
-//   x: 0,
-//   y: gameField.height / 2,
-//   width: 30,
-//   height: 40,
-//   speed: 60, // px/s
-//   moving: true,
-// };
-
-// // cat right
-// let enemy2 = {
-//   x: gameField.width - 50,
-//   y: gameField.height / 2,
-//   width: 30,
-//   height: 40,
-//   speed: 60, // px/s
-//   moving: true,
-// };
 
 let grid;
 
@@ -158,11 +133,6 @@ function createGameField() {
 
   createAlgorithmEnemy();
   displayAlgorithmEnemy();
-
-  // initAlgorithm(grid);
-
-  // displayCatLeft();
-  // displayCatRight();
 }
 
 // // coord = placement in grid = which tile {row, col}
@@ -173,7 +143,7 @@ function getTileAtCoord({ row, col }) {
   return tiles[row][col];
 }
 
-// returns the the tile type at {row, col} calculated out from pos {x,y}
+// returns the the tiletype at {row, col} calculated out from pos {x,y}
 function getTileAtPos({ x, y }) {
   return getTileAtCoord(coordFromPos({ x: x, y: y }));
 }
@@ -186,12 +156,7 @@ function coordFromPos({ x, y }) {
   return { row, col };
 }
 
-// returns a pos {x,y} calculated from a coord {row, col}
-// function posFromCoord({ row, col }) {
-//   const x = col * TILE_SIZE;
-//   const y = row * TILE_SIZE;
-//   return { x, y };
-// }
+// returns a pos {x,y} calculated from a coord {row, col} and sets reg point to middle of tile
 function posFromCoord(coord) {
   return {
     x: coord.col * TILE_SIZE + TILE_SIZE / 2,
@@ -324,6 +289,10 @@ function initAlgorithm() {
   pathFound = false;
 
   console.log(grid);
+  grid.fillProp("gScore", Infinity);
+  grid.fillProp("hScore", 0);
+  grid.fillProp("fScore", Infinity);
+  console.log(grid);
 
   // Get start and goal nodes
   startNode = grid.get(getTileCoordUnder(enemy3));
@@ -358,40 +327,6 @@ function initAlgorithm() {
     setTimeout(initAlgorithm, algorithmRetryDelay);
   }
 }
-
-// function initAlgorithm() {
-//   console.log("before");
-
-//   const startNode = grid.get(getTileCoordUnder(enemy3));
-//   console.log("startNode enemy:", startNode);
-
-//   if (!startNode) {
-//     console.error("Start node not found");
-//     return;
-//   }
-
-//   const goalNode = grid.get(getTileCoordUnder(player));
-//   console.log("goalnode - player: ", goalNode);
-
-//   if (!goalNode) {
-//     console.error("Goal node not found");
-//     return;
-//   }
-
-//   pathToWalk = A_Star(grid, startNode, goalNode);
-//   console.log("!!!!!!!!!!!!!!!!!!!!!!!!Path: ", pathToWalk);
-//   console.log("after");
-
-//   if (pathToWalk && pathToWalk.length > 0) {
-//     debugHighlightPath(pathToWalk);
-//     pathFound = true;
-//   } else {
-//     // console.error("No path found");
-
-//     console.error("No path found, retrying...");
-//     setTimeout(initAlgorithm, algorithmRetryDelay); // Retry after a delay
-//   }
-// }
 
 // Function to highlight the path
 function debugHighlightPath(path) {
@@ -482,31 +417,26 @@ function showDebugging() {
   debugShowEnemy3RegPoint();
 }
 
-// function displayCatRight() {
-//   const shownCatRight = document.querySelector("#enemy2");
-
-//   shownCatRight.style.translate = `${enemy2.x}px ${enemy2.y}px`;
-// }
-
-// function displayCatLeft() {
-//   const shownCatRight = document.querySelector("#enemy1");
-
-//   shownCatRight.style.translate = `${enemy1.x}px ${enemy1.y}px`;
-// }
-
 // ***************** Tick / view *****************
 
-function positionsAreEqual(pos1, pos2) {
-  return pos1.row === pos2.row && pos1.col === pos2.col;
-}
-
-// let pathToWalk = [];
 let prevPlayerTile = null;
-let lastAlgorithmCallTime = 0; // Timestamp of the last algorithm call
+let lastAlgorithmCallTime = 0;
 const algorithmCallDelay = 500;
 function tick(time) {
-  // if gameRunning false pause animations
+  // if gameRunning is false, pause animations
   if (!gameRunning) return;
+
+  const currentPlayerTile = getTileCoordUnder(player);
+  const currentEnemyTile = getTileCoordUnder(enemy3);
+
+  const playerPosition = posFromCoord(currentPlayerTile);
+  const tileValue = getTileAtPos(playerPosition);
+
+  if (tileValue === 1) {
+    console.log("game won");
+    resetGame();
+    return;
+  }
 
   requestAnimationFrame(tick);
 
@@ -515,94 +445,39 @@ function tick(time) {
 
   movePlayer(deltaTime);
   displayPlayer();
-  showDebugging();
+  // showDebugging();
 
-  const currentPlayerTile = getTileCoordUnder(player);
-  const currentEnemyTile = getTileCoordUnder(enemy3);
-
-  // Check if the player  has moved to a new tile
+  // Check if the player has moved to a new tile
   if (!prevPlayerTile || !positionsAreEqual(currentPlayerTile, prevPlayerTile)) {
     pathFound = false;
     prevPlayerTile = currentPlayerTile;
   }
 
-  // If no path found, reset the algorithm
-  if (!pathFound && time - lastAlgorithmCallTime > algorithmCallDelay) {
+  // If no path found, and time has passed and player isnt on grasstile (1) or doortile (3) - reset the algorithm
+  if (!pathFound && time - lastAlgorithmCallTime > algorithmCallDelay && tileValue !== 1 && tileValue !== 3) {
     console.log("No path found, resetting the algorithm.");
 
-    // Reset grid and reinitialize the algorithm
-
-    resetGrid();
-    initAlgorithm(); // Call the algorithm again to find a new path
+    // Call the algorithm again to find a new path
+    initAlgorithm();
 
     // Update the timestamp of the last algorithm call
     lastAlgorithmCallTime = time;
   } else {
-    moveEnemy3(pathToWalk, deltaTime);
+    moveAlgorithmEnemy(pathToWalk, deltaTime);
     displayAlgorithmEnemy();
     console.log("Path found, enemy is moving.");
   }
 
   if (currentPlayerTile.col === currentEnemyTile.col && currentPlayerTile.row === currentEnemyTile.row) {
     console.log("Enemy3 has reached the player. Stopping the game.");
-    gameRunning = false;
+    // gameRunning = false;
     resetGame();
   }
 }
 
-// // let pathToWalk = [];
-// let prevPlayerTile = null;
-// let lastAlgorithmCallTime = 0; // Timestamp of the last algorithm call
-// const algorithmCallDelay = 500;
-// function tick(time) {
-//   // if gameRunning false pause animations
-//   if (!gameRunning) return;
-
-//   requestAnimationFrame(tick);
-
-//   const deltaTime = (time - lastTime) / 1000;
-//   lastTime = time;
-
-//   movePlayer(deltaTime);
-//   displayPlayer();
-//   showDebugging();
-
-//   const currentPlayerTile = getTileCoordUnder(player);
-//   const currentEnemyTile = getTileCoordUnder(enemy3);
-
-//   // Check if the player or enemy has moved to a new tile
-//   if (!prevPlayerTile || !positionsAreEqual(currentPlayerTile, prevPlayerTile)) {
-//     pathFound = false;
-//     prevPlayerTile = currentPlayerTile;
-//   }
-
-//   // If no path found, reset the algorithm
-//   if (!pathFound && time - lastAlgorithmCallTime > algorithmCallDelay) {
-//     console.log("No path found, resetting the algorithm.");
-
-//     // Reset or reinitialize the algorithm
-//     resetAlgorithmVariables(); // Reset any algorithm-related variables
-//     resetGrid();
-//     initAlgorithm(); // Call the algorithm again to find a new path
-
-//     // Update the timestamp of the last algorithm call
-//     lastAlgorithmCallTime = time;
-//   } else {
-//     moveEnemy3(pathToWalk, deltaTime);
-//     displayAlgorithmEnemy();
-//     console.log("Path found, enemy is moving.");
-//   }
-
-//   // if (enemy3.x === player.x && enemy3.y === player.y) {
-//   //   console.log("Enemy3 has reached the player. Stopping the game.");
-//   //   gameRunning = false;
-//   // }
-//   if (currentPlayerTile.col === currentEnemyTile.col && currentPlayerTile.row === currentEnemyTile.row) {
-//     console.log("Enemy3 has reached the player. Stopping the game.");
-//     gameRunning = false;
-//     resetGame();
-//   }
-// }
+function positionsAreEqual(pos1, pos2) {
+  return pos1.row === pos2.row && pos1.col === pos2.col;
+}
 
 // ***************** Controller *****************
 
@@ -640,10 +515,6 @@ function updateKeyState(key, isPressed) {
 // check temporary position is valid before moving player object
 let playerDirection = { x: 0, y: 0 };
 function movePlayer(deltaTime) {
-  // const deltaSpeed = player.speed * deltaTime;
-  // player.x = player.x + deltaSpeed;
-  // player.y = player.y +1;
-
   // reset player direction
   playerDirection.x = 0;
   playerDirection.y = 0;
@@ -690,26 +561,8 @@ function movePlayer(deltaTime) {
   }
 }
 
-// // move visualEnemy
-// function moveEnemy3(path) {
-//   let index = 0;
-
-//   function move() {
-//     if (index < path.length) {
-//       const node = path[index];
-//       enemy3.x = node.col * TILE_SIZE + enemy3.regX;
-//       enemy3.y = node.row * TILE_SIZE + enemy3.regY;
-//       displayAlgorithmEnemy();
-//       index++;
-//       setTimeout(move, 500); // Adjust the speed as needed
-//     }
-//   }
-
-//   move();
-// }
-
 let enemyDirection = { x: 0, y: 0 };
-function moveEnemy3(pathToWalk, deltaTime) {
+function moveAlgorithmEnemy(pathToWalk, deltaTime) {
   if (!pathToWalk || pathToWalk === 0) return;
 
   console.log("pathToWalk.length: ", pathToWalk.length);
@@ -725,24 +578,24 @@ function moveEnemy3(pathToWalk, deltaTime) {
   // Check if the enemy is on the nextNode tile
   if (currentCoord.row === nextNode.row && currentCoord.col === nextNode.col) {
     // console.log("Enemy reached next node.");
-    pathToWalk.shift(); // Remove the current node from the path
+
+    // Remove the current node from the path
+    pathToWalk.shift();
     if (pathToWalk.length === 0) {
       console.log("Enemy has reached the end of the path.");
-      return; // No more nodes to move to
+      return;
     }
   }
 
   // Calculate direction towards the next node
-  const targetPos = posFromCoord(nextNode); // Convert grid coordinates to pixel position
-  const enemyDirection = {
+  // Convert grid coordinates to pixel position
+  const targetPos = posFromCoord(nextNode);
+  enemyDirection = {
     x: targetPos.x - enemy3.x,
     y: targetPos.y - enemy3.y,
   };
 
   // console.log("enemy direction: ", enemyDirection);
-
-  // highlight enemy3 path to player
-  debugHighlightTile(coordFromPos(targetPos));
 
   // calculate distance to make sure player doesn't move faster diagonally
   const dist = Math.hypot(enemyDirection.x, enemyDirection.y);
@@ -754,17 +607,6 @@ function moveEnemy3(pathToWalk, deltaTime) {
     x: enemyDirection.x * enemy3.speed * deltaTime,
     y: enemyDirection.y * enemy3.speed * deltaTime,
   };
-
-  // // update temp position with movement
-  // const position = { x: enemy3.x, y: enemy3.y };
-  // position.x += movement.x;
-  // position.y += movement.y;
-
-  // // if temp position is valid update enemys position
-  // if (canMove(enemy3, position)) {
-  //   enemy3.x = position.x;
-  //   enemy3.y = position.y;
-  // }
 
   // Check for collision with walls
   const newPosition = { x: enemy3.x + movement.x, y: enemy3.y + movement.y };
@@ -787,8 +629,8 @@ function moveEnemy3(pathToWalk, deltaTime) {
   }
 }
 
-function canMove(player, position) {
-  // if (position.x < 0 || position.y < 0 || position.x > GAMEFIELD_WIDTH - player.width || position.y > GAMEFIELD_HEIGHT - player.height) return false;
+function canMove(entity, position) {
+  // if (position.x < 0 || position.y < 0 || position.x > GAMEFIELD_WIDTH - entity.width || position.y > GAMEFIELD_HEIGHT - entity.height) return false;
 
   const coord = getTileCoordUnder(position);
 
@@ -821,25 +663,28 @@ function resetGrid() {
   displayTiles();
 }
 
-function clearCharacters() {
-  const characters = document.querySelector("#characters");
-
-  // removes all characters
-  characters.innerHTML = "";
-}
-
 function resetAlgorithmVariables() {
+  lastTime = 0;
+  lastAlgorithmCallTime = 0;
   startNode = null;
   goalNode = null;
   pathToWalk = [];
   pathFound = false;
 }
 
-function resetPositions() {
+function resetCharacters() {
+  const characters = document.querySelector("#characters");
+  // removes all characters in html
+  characters.innerHTML = "";
+
+  // resets the characters stored positions
   player.x = initPlayerX;
   player.y = initPlayerY;
   enemy3.x = initEnemyX;
   enemy3.y = initEnemyY;
+
+  createPlayer();
+  createAlgorithmEnemy();
 
   displayPlayer();
   displayAlgorithmEnemy();
@@ -855,76 +700,23 @@ function resetVisualTiles() {
 function resetGame() {
   console.log("reset");
 
-  // Clear visual elements (characters and tiles)
-  clearCharacters();
-  resetVisualTiles();
+  // Stop the game loop
+  gameRunning = false;
+  cancelAnimationFrame(tick);
+
   resetAlgorithmVariables();
 
+  const button = document.querySelector("#btn-playState");
+  button.textContent = "Start";
   const gamefield = document.querySelector("#gamefield");
 
   gamefield.style.setProperty("--width", GAMEFIELD_WIDTH);
   gamefield.style.setProperty("--height", GAMEFIELD_HEIGHT);
 
-  // init the Grid for the algorithm
-  // grid = grid.reset(GRID_WIDTH, GRID_HEIGHT);
+  // Clear visual elements (characters and tiles)
   resetGrid();
-
-  // init tiles and add them as nodes in grid
-  // createTiles(grid);
-  // displayTiles();
-  // console.log(grid);
-
-  createPlayer();
-  displayPlayer();
-
-  createAlgorithmEnemy();
-  displayAlgorithmEnemy();
-
-  // // Reset grid and algorithm variables
-  // // grid.reset({ node: null });
-  // // grid.clear();
-  // grid.createGrid(GRID_HEIGHT, GRID_WIDTH);
-
-  // // Recreate the game field
-  // // createGameField();
-
-  // Reset positions of player and enemies
-  // resetPositions();
-
-  // gameState();
+  resetVisualTiles();
+  resetCharacters();
 
   console.log("Game has been reset!");
 }
-
-// function resetGame() {
-//   console.log("Resetting game...");
-
-//   console.log(pathToWalk);
-
-//   // Reset game variables
-//   lastTime = 0;
-//   gameRunning = false;
-//   pathFound = false;
-//   pathToWalk = [];
-//   prevPlayerTile = null;
-//   lastAlgorithmCallTime = 0;
-
-//   // Reset player and enemy positions
-//   player.x = 90;
-//   player.y = 55;
-//   enemy3.x = GAMEFIELD_WIDTH / 2 - 15;
-//   enemy3.y = GAMEFIELD_HEIGHT - 100;
-
-//   // Clear any visual highlights
-//   const highlightedTiles = document.querySelectorAll(".tile.highlight-path, .tile.highlight-open-set");
-//   highlightedTiles.forEach((tile) => {
-//     tile.classList.remove("highlight-path");
-//     tile.classList.remove("highlight-open-set");
-//   });
-
-//   // Reinitialize the grid
-//   grid = new Grid(GRID_WIDTH, GRID_HEIGHT);
-
-//   // Restart the game
-//   gameState();
-// }

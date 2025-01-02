@@ -237,6 +237,17 @@ export default class Grid {
     }
   }
 
+  // - fill prop w. value - skriver given value ind i alle nodes på given prop
+  fillProp(prop, value) {
+    for (let r = 0; r < this.rows(); r++) {
+      for (let c = 0; c < this.cols(); c++) {
+        if (this.grid[r][c] && this.grid[r][c].hasOwnProperty(prop)) {
+          this.grid[r][c][prop] = value;
+        }
+      }
+    }
+  }
+
   // - `print()` - viser griddet i konsollen
   print() {
     console.log(this.grid);

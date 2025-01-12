@@ -112,14 +112,15 @@ header h4 {
 }
 
 .tile.highlight-path {
-   outline: 2px dashed rgb(21, 255, 0);
+  outline: 2px dashed rgb(21, 255, 0);
   translate: 0 0;
+  z-index: 2;
 }
 
 .tile.highlight-open-set {
   outline: 2px solid rgb(24, 143, 223);
   translate: 0 0;
-  
+  z-index: 1;
 }
 
 .player {
@@ -131,6 +132,7 @@ header h4 {
   background-size: 600% 600%;
   image-rendering: pixelated;
   position: absolute;
+  z-index: 5;
   /* border: rgb(217, 255, 0) 2px dotted; */
   /* outline: red 2px dotted; */
 }
@@ -159,6 +161,7 @@ header h4 {
   background-size: 2500% 1100%; /* Scale to match the images */
   image-rendering: pixelated;
   position: absolute;
+
   /* border: red 2px dotted; */
 }
 
@@ -180,5 +183,6 @@ header h4 {
   background-size: 400% 400%;
   image-rendering: pixelated;
   position: absolute;
+  z-index: 5;
   /* border: red 2px dotted; */
 }

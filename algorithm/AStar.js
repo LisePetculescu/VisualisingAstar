@@ -70,7 +70,7 @@ export default function A_Star(grid, startNode, goalNode) {
   openSet.insert(startNode);
 
   console.log("OpenSet: ", openSet);
-  highlightOpenSet(openSet.heap);
+  // highlightOpenSet(openSet.heap);
 
   // init a map of predessesors. a map because nodes should only be added once.
   let cameFrom = new Map();
@@ -91,12 +91,14 @@ export default function A_Star(grid, startNode, goalNode) {
     // get node with lowest fScore from openSet
     let currentNode = openSet.extractMin();
     // console.log("Current Node:", currentNode);
+    // highlightOpenSet(openSet.heap);
 
     // check if currentNode is the goalNode
     // if yes, the cheapest path has been found
     if (currentNode === goalNode) {
       // // console.log("Goal Node Reached:", goalNode);
       // return reconstructPath(cameFrom, goalNode);
+      highlightOpenSet(openSet.heap);
       const path = reconstructPath(cameFrom, goalNode);
 
       return path;
@@ -136,16 +138,16 @@ export default function A_Star(grid, startNode, goalNode) {
           if (openSet.peek() === neighbour) {
             // If the neighbour is the root, replace it
             openSet.replaceRoot(neighbour);
+            // highlightOpenSet(openSet.heap);
           } else {
             // Otherwise, remove and reinsert the neighbour
             openSet.removeNode(neighbour);
             openSet.insert(neighbour);
           }
-          highlightOpenSet(openSet.heap);
         } else {
           // Insert the neighbour if it's not already in the openSet
           openSet.insert(neighbour);
-          highlightOpenSet(openSet.heap);
+          // highlightOpenSet(openSet.heap);
         }
       }
     }
